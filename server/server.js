@@ -5,10 +5,19 @@ const { v4: uuidv4 } = require("uuid");
 const jwt = require('jsonwebtoken');
 const { setCache, getCache, clearCache, setUserCache, getUserCache, clearUserCache } = require("./cache.js");
 const fs = require('fs');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
-app.use(express.json());
+//app.use(express.json());
+
+app.use(express.static(path.join(__dirname, "../client/dist")));
+
+// toutes les routes renvoient index.html
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+});
+
 const server = https.createServer({
   //key: fs.readFileSync('../ssl/key.pem'),
   //cert: fs.readFileSync('../ssl/cert.pem')
