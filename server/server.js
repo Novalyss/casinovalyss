@@ -18,10 +18,6 @@ app.use(express.static(distPath));
 // toutes les routes renvoient index.html
 const indexFile = path.join(distPath, "index.html");
 console.log("indexFile=" + indexFile);
-app.get(/.*/, (req, res) => {
-  console.log("serve index file");
-  res.sendFile(indexFile);
-});
 
 const server = https.createServer({
   //key: fs.readFileSync('../ssl/key.pem'),
@@ -278,6 +274,11 @@ app.post("/api/unequip", authenticateUser, async (req, res) => {
   console.log(req.body);
   const result = await sendToWebSocket({"user": req.user, "action": "unequip", itemSlot: req.body.slot});
   return res.json({ success: result.status, data: result.data });
+});
+
+app.get(/.*/, (req, res) => {
+  console.log("serve index file");
+  res.sendFile(indexFile);
 });
 
 /* WebSocket */
