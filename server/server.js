@@ -11,11 +11,14 @@ require('dotenv').config();
 const app = express();
 //app.use(express.json());
 
-app.use(express.static(path.join(__dirname, "../client/dist")));
+const distPath = path.join(__dirname, "../client/dist");
+
+console.log("distpath=" + distPath);
+app.use(express.static(distPath));
 
 // toutes les routes renvoient index.html
 app.get(/.*/, (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+  res.sendFile(distPath);
 });
 
 const server = https.createServer({
