@@ -1,17 +1,17 @@
 const express = require('express');
-const fs = require('fs');
 const https = require('https');
 const WebSocket = require('ws');
 const { v4: uuidv4 } = require("uuid");
 const jwt = require('jsonwebtoken');
 const { setCache, getCache, clearCache, setUserCache, getUserCache, clearUserCache } = require("./cache.js");
+const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
 app.use(express.json());
 const server = https.createServer({
-  key: fs.readFileSync('../ssl/key.pem'),
-  cert: fs.readFileSync('../ssl/cert.pem')
+  //key: fs.readFileSync('../ssl/key.pem'),
+  //cert: fs.readFileSync('../ssl/cert.pem')
 }, app);
 
 const router = express.Router();
