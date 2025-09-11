@@ -7,10 +7,11 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
+    /*
     https: {
       key: fs.readFileSync(path.resolve(__dirname, '../ssl/key.pem')),
       cert: fs.readFileSync(path.resolve(__dirname, '../ssl/cert.pem')),
-    },
+    },*/
     port: 5173,
     host: 'localhost',
     proxy: {
