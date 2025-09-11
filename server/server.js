@@ -4,26 +4,23 @@ const WebSocket = require('ws');
 const { v4: uuidv4 } = require("uuid");
 const jwt = require('jsonwebtoken');
 const { setCache, getCache, clearCache, setUserCache, getUserCache, clearUserCache } = require("./cache.js");
-const fs = require('fs');
 const path = require('path');
+const http = require("http");
 require('dotenv').config();
 
 const app = express();
-//app.use(express.json());
 
+// server statics files
 const distPath = path.join(__dirname, "../client/dist");
-
 app.use(express.static(distPath));
+
+// to automatically parse JSON in API
+app.use(express.json());
 
 // toutes les routes renvoient index.html
 const indexFile = path.join(distPath, "index.html");
-console.log("indexFile=" + indexFile);
 
-const server = https.createServer({
-  //key: fs.readFileSync('../ssl/key.pem'),
-  //cert: fs.readFileSync('../ssl/cert.pem')
-}, app);
-
+const server = http.createServer(app);
 const router = express.Router();
 app.use(router)
 

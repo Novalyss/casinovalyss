@@ -10,7 +10,7 @@
 
     "build": "npm run client:build",
     "start": "npm run server:start",
-    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\""
+    "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\""
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.12",
