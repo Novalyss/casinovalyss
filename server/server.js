@@ -13,12 +13,14 @@ const app = express();
 
 const distPath = path.join(__dirname, "../client/dist");
 
-console.log("distpath=" + distPath);
 app.use(express.static(distPath));
 
 // toutes les routes renvoient index.html
+const indexFile = path.join(distPath, "index.html");
+console.log("indexFile=" + indexFile);
 app.get(/.*/, (req, res) => {
-  res.sendFile(path.join(distPath, "index.html"));
+  console.log("serve index file");
+  res.sendFile(indexFile);
 });
 
 const server = https.createServer({
