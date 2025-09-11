@@ -18,7 +18,7 @@ app.use(express.static(distPath));
 
 // toutes les routes renvoient index.html
 app.get(/.*/, (req, res) => {
-  res.sendFile(distPath);
+  res.sendFile(path.join(distPath, "index.html"));
 });
 
 const server = https.createServer({
