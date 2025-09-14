@@ -12,7 +12,6 @@ const { questProgress } = useEvents();
       const result = await apiRequest("/quests");
       const parsed = JSON.parse(result.result);
       setQuests(parsed);
-      console.log(parsed);
     })();
   }, []);
 

@@ -250,31 +250,26 @@ app.put("/api/refresh", authenticateUser, async (req, res) => {
 });
 
 app.post("/api/buy", authenticateUser, async (req, res) => {
-  console.log(req.body);
   const result = await sendToWebSocket({"user": req.user, "action": "buy", itemId: req.body.itemId});
   return res.json({ success: result.status, data: result.data });
 });
 
 app.post("/api/delete", authenticateUser, async (req, res) => {
-  console.log(req.body);
   const result = await sendToWebSocket({"user": req.user, "action": "delete", itemId: req.body.itemId});
   return res.json({ success: result.status, data: result.data });
 });
 
 app.post("/api/equip", authenticateUser, async (req, res) => {
-  console.log(req.body);
   const result = await sendToWebSocket({"user": req.user, "action": "equip", itemId: req.body.itemId});
   return res.json({ success: result.status, data: result.data });
 });
 
 app.post("/api/unequip", authenticateUser, async (req, res) => {
-  console.log(req.body);
   const result = await sendToWebSocket({"user": req.user, "action": "unequip", itemSlot: req.body.slot});
   return res.json({ success: result.status, data: result.data });
 });
 
 app.get(/.*/, (req, res) => {
-  console.log("serve index file");
   res.sendFile(indexFile);
 });
 

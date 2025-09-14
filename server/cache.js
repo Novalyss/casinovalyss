@@ -1,4 +1,11 @@
-const TTL = 12 * 60 * 60 * 1000; // 12h en ms
+const TTL_QUEST = 12 * 60 * 60 * 1000; // 12h en ms
+const TTL_SHOP = 2 * 60 * 60 * 1000; // 2h en ms
+
+const TTL_MAP = {
+  progress: TTL_QUEST,
+  shop: TTL_SHOP,
+};
+
 let userCache = {};
 let cache = {};
 
@@ -24,7 +31,10 @@ function getUserCache(userId, key) {
   if (!userCache[userId] || !userCache[userId][key]) return null;
 
   const { data, timestamp } = userCache[userId][key];
-  if (Date.now() - timestamp > TTL) {
+  
+  let TTL = TTL_MAP[key] ?? null;
+
+  if (TTL && Date.now() - timestamp > TTL) {
     // Expiré
     delete userCache[userId][key];
     return null;

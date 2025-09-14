@@ -29,7 +29,6 @@ export default function ProtectedRoute() {
 
   // Pas de token → rediriger direct
   if (!token) {
-    console.log("set return to =" + location.pathname);
     sessionStorage.setItem("returnTo", location.pathname);
     return <Navigate to="/auth" replace />;
   }
@@ -41,7 +40,6 @@ export default function ProtectedRoute() {
 
   // Token invalide → redirection
   if (isValid === false) {
-    console.log("set return to =" + location.pathname);
     sessionStorage.setItem("returnTo", location.pathname);
     return <Navigate to="/auth" replace />;
   }
