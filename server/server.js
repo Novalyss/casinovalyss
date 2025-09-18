@@ -98,6 +98,7 @@ app.get("/api/events", (req, res) => {
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
+    res.setHeader("X-Accel-Buffering", "no");
     res.flushHeaders();
 
     // Ajout de la connexion dans la Map
@@ -127,6 +128,13 @@ function sendToUser(user, property, data) {
       res.write(`event: ${property}\n`);
       res.write(`data: ${data}\n\n`);
     }
+  }
+}
+
+function sendToAllUser(property, data) {
+  for (const res of clients) {
+    res.write(`event: ${property}\n`);
+    res.write(`data: ${data}\n\n`);
   }
 }
 
@@ -269,6 +277,7 @@ app.post("/api/unequip", authenticateUser, async (req, res) => {
   return res.json({ success: result.status, data: result.data });
 });
 
+/* This API MUST be at the end */
 app.get(/.*/, (req, res) => {
   res.sendFile(indexFile);
 });
@@ -302,6 +311,12 @@ wss.on('connection', (ws) => {
     if (action == "reset") {
       clearCache();
       clearUserCache();
+      return;
+    }
+
+    if (action == "live") {
+      setCache(action, data);
+      sendToAllUser(action, data);
       return;
     }
 
@@ -363,6 +378,10 @@ async function sendToWebSocket(request) {
     }, 15000);
   });
 }
+
+/* INIT VARS */
+
+setCache("live", "off");
 
 /* START SERVER AT THE END OF CONFIG */
 const PORT = process.env.VITE_PORT || 3000;
