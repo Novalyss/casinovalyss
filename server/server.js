@@ -25,7 +25,8 @@ const server = http.createServer(app);
 const router = express.Router();
 app.use(router)
 
-const wss = new WebSocket.Server({ noServer: true });
+const wss = new WebSocket.Server({ server });
+//const wss = new WebSocket.Server({ noServer: true });
 const pendingRequests = new Map();
 const tokens = new Map();
 const clients = new Map();
@@ -505,6 +506,7 @@ async function sendToWebSocket(request) {
   return Promise.resolve({ status: "KO", data: "\"Le casino est fermé\"" });
 }
 
+/*
 server.on("upgrade", (req, socket, head) => {
   const { query } = url.parse(req.url, true);
   const token = query.token;
@@ -521,6 +523,7 @@ server.on("upgrade", (req, socket, head) => {
     wss.emit("connection", ws, req);
   });
 });
+*/
 
 /* START SERVER AT THE END OF CONFIG */
 const PORT = process.env.VITE_PORT || 3000;
