@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useEvents } from "../components/EventsProvider";
-import { apiRequest } from "../components/api";
+import { apiRequest } from "../lib/api";
 
 export default function ShopComponent() {
     const { gold } = useEvents();
@@ -10,7 +10,7 @@ export default function ShopComponent() {
     }, []);
 
     if (!gold) {
-        return <div className="text-lg font-semibold">⏳ Chargement ...</div>;
+        return <div className="text-lg font-semibold">Chargement ...</div>;
     }
 
     return (

@@ -1,22 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
+import { deserializeItem } from "../lib/utils";
 
 const EventsContext = createContext();
 
-function deserializeItem(str) {
-    const [Id, Type, Chance, FlatBonus, MultBonus, CooldownReduction, CostReduction, Cost] = str.split("|");
 
-    return {
-      Id,
-      Type,
-      Chance: Number(Chance),
-      FlatBonus: Number(FlatBonus),
-      MultBonus: Number(MultBonus),
-      CooldownReduction: Number(CooldownReduction),
-      CostReduction: Number(CostReduction),
-      Cost: Number(Cost)
-    };
-  }
 
 export function EventsProvider() {
   const [gold, setGold] = useState(0);
@@ -67,7 +55,10 @@ export function EventsProvider() {
 
     eventSource.addEventListener("shop", (e) => {
       const data = JSON.parse(e.data);
-      const items = data.map(deserializeItem);
+      let items = null;
+      if (data) {
+        items = data.map(deserializeItem);
+      }
       console.log("Shop mis à jour:", items);
       setShop(items);
     });

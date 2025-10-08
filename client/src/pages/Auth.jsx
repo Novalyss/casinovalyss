@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiRequest } from "../components/api";
+import { apiRequest } from "../lib/api";
 const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
 const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
 const SCOPES = import.meta.env.VITE_SCOPES;
@@ -54,7 +54,7 @@ export default function Auth() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 text-center">
       <h1 className="text-2xl font-bold mb-4">Connexion Twitch</h1>
       <button onClick={handleLogin} className="px-4 py-2 bg-purple-600 text-white rounded">
         Se connecter avec Twitch

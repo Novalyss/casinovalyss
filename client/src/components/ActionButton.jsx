@@ -1,33 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function ActionButton({
   children,
   onClick,
-  cooldown = 1500,     // ms
+  disabled = false,  // prop désactivation externe
+  cooldown = 2000,   // ms
   className = "",
   type = "button",
   ...props
 }) {
-  const [disabled, setDisabled] = useState(false);
+  const [internalDisabled, setInternalDisabled] = useState(disabled);
+
+  // synchronise la prop `disabled` avec l'état interne
+  useEffect(() => {
+    setInternalDisabled(disabled);
+  }, [disabled]);
 
   const handleClick = async (e) => {
-    if (disabled) return;
+    if (internalDisabled) return;
 
-    setDisabled(true);
+    setInternalDisabled(true);
 
     try {
-      // promesse API (si async)
       const apiPromise = Promise.resolve(onClick?.(e));
-
-      // promesse cooldown
       const cooldownPromise = new Promise((resolve) =>
         setTimeout(resolve, cooldown)
       );
 
-      // bouton reste désactivé tant que les 2 ne sont pas terminés
       await Promise.all([apiPromise, cooldownPromise]);
     } finally {
-      setDisabled(false);
+      // seulement si ce n’est pas bloqué par la prop externe
+      if (!disabled) {
+        setInternalDisabled(false);
+      }
     }
   };
 
@@ -36,9 +41,9 @@ export default function ActionButton({
       {...props}
       type={type}
       onClick={handleClick}
-      disabled={disabled}
+      disabled={internalDisabled}
       className={`px-4 py-2 rounded transition ${
-        disabled
+        internalDisabled
           ? "opacity-50 cursor-not-allowed pointer-events-none"
           : "bg-blue-600 hover:bg-blue-700 text-white"
       } ${className}`}

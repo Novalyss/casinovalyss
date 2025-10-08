@@ -1,23 +1,35 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import { useConfig } from "./ConfigProvider";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const { online } = useConfig();
 
   return (
-    <header className="bg-gray-900 text-white p-4 shadow">
-      <div className="container mx-auto flex justify-between items-center">
+    <header className="">
+      <div className="container mx-auto flex items-center justify-center">
         {/* Logo */}
-        <Link to="/">
-          <img src="/assets/logo.png" alt="Novalyss Logo" className="h-10 w-auto" />
+        <Link to="/shop">
+          <img src="/assets/logo.png" alt="CasiNovalyss Logo" className="h-10 w-auto" />
         </Link>
+
+        {/* Logo */}
+        <Link to="https://www.twitch.tv/novalyss" target="_blank" >
+          <img src="/assets/twitch-logo.png" alt="Twitch" className="h-10 w-auto" />
+        </Link>
+        {online === "on" ? (
+          <span>le casino est ouvert !</span>
+        ) : (
+          <span>le casino est fermé !</span>
+        )}
 
         {/* Menu desktop */}
         <nav className="hidden md:flex space-x-4">
-          <Link to="/" className="hover:underline">Accueil</Link>
           <Link to="/shop" className="hover:underline">Shop</Link>
           <Link to="/inventory" className="hover:underline">Inventaire</Link>
+          <Link to="/armory" className="hover:underline">Armurerie</Link>
           <Link to="/quest" className="hover:underline">Quêtes</Link>
           <Link to="/leaderboard" className="hover:underline">Leaderboard</Link>
           <Link to="/stats" className="hover:underline">Stats</Link>
@@ -34,13 +46,13 @@ export default function Header() {
 
       {/* Dropdown mobile */}
       {open && (
-        <nav className="md:hidden bg-gray-800 p-4 space-y-2">
-          <Link to="/" className="block hover:underline">Accueil</Link>
-          <Link to="/shop" className="block hover:underline">Shop</Link>
-          <Link to="/inventory" className="block hover:underline">Inventaire</Link>
-          <Link to="/quest" className="block hover:underline">Quêtes</Link>
-          <Link to="/leaderboard" className="block hover:underline">Leaderboard</Link>
-          <Link to="/stats" className="block hover:underline">Stats</Link>
+        <nav className="md:hidden p-4 space-y-2">
+          <Link onClick={() => setOpen(!open)} to="/" className="block hover:underline">Accueil</Link>
+          <Link onClick={() => setOpen(!open)} to="/shop" className="block hover:underline">Shop</Link>
+          <Link onClick={() => setOpen(!open)} to="/inventory" className="block hover:underline">Inventaire</Link>
+          <Link onClick={() => setOpen(!open)} to="/quest" className="block hover:underline">Quêtes</Link>
+          <Link onClick={() => setOpen(!open)} to="/leaderboard" className="block hover:underline">Leaderboard</Link>
+          <Link onClick={() => setOpen(!open)} to="/stats" className="block hover:underline">Stats</Link>
         </nav>
       )}
     </header>

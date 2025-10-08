@@ -1,6 +1,6 @@
 import { useEvents } from "../components/EventsProvider";
 import { useEffect } from "react";
-import { apiRequest } from "../components/api";
+import { apiRequest } from "../lib/api";
 
 export default function Stats() {
     const { casinoStats } = useEvents();

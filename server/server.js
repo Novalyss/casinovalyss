@@ -3,9 +3,10 @@ const https = require('https');
 const WebSocket = require('ws');
 const { v4: uuidv4 } = require("uuid");
 const jwt = require('jsonwebtoken');
-const { setCache, getCache, clearCache, setUserCache, getUserCache, clearUserCache } = require("./cache.js");
+const { setCache, getCache, clearCache, setUserCache, getUserCache, clearUserCache, getLeaderBoardData, getAllUsers, clearShop } = require("./cache.js");
 const path = require('path');
 const http = require("http");
+const url = require("url");
 require('dotenv').config();
 
 const app = express();
@@ -24,68 +25,14 @@ const server = http.createServer(app);
 const router = express.Router();
 app.use(router)
 
-const wss = new WebSocket.Server({ server });
-const pendingRequests = new Map(); // ID -> resolve()
+const wss = new WebSocket.Server({ noServer: true });
+const pendingRequests = new Map();
+const tokens = new Map();
 const clients = new Map();
+const clientOnline = new Set();
 const messageQueue = [];
-let isConnected;
-
-/* SECURITY */
-
-function authenticateUser(req, res, next) {
-    const authHeader = req.headers["authorization"];
-
-    // Vérifie la présence du header
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return res.status(401).json({ error: "Token manquant ou invalide" });
-    }
-
-    const token = authHeader.split(" ")[1];
-
-    try {
-        // Vérifie et décode le token avec ta clé secrète
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        // On attache le login au request pour les routes suivantes
-        req.user = decoded.displayName;
-
-        next(); // passe à la route suivante
-    } catch (err) {
-        console.error("Erreur JWT:", err.message);
-        return res.status(401).json({ error: "Token invalide ou expiré" });
-    }
-}
-
-/* API ROUTES */
-
-app.post("/api/auth", async (req, res) => {
-  const { access_token } = req.body;
-
-  // Récup infos user Twitch
-  const resp = await fetch("https://api.twitch.tv/helix/users", {
-    headers: {
-      "Authorization": `Bearer ${access_token}`,
-      "Client-Id": process.env.VITE_CLIENT_ID
-    }
-  });
-
-  const data = await resp.json();
-  const user = data.data[0];
-
-  // Génère un JWT signé
-  const token = jwt.sign(
-    {
-      id: user.id,
-      login: user.login,
-      displayName: user.display_name,
-      profileImage: user.profile_image_url,
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: "10h" }
-  );
-
-  res.json({ token });
-});
+let isConnected = false;
+let live = "off";
 
 /* SSE */
 app.get("/api/events", (req, res) => {
@@ -93,8 +40,8 @@ app.get("/api/events", (req, res) => {
   const token = req.query.token;
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    const user = payload.displayName;
+    const payload = tokens[token];
+    const user = payload.display_name;
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
@@ -122,6 +69,32 @@ app.get("/api/events", (req, res) => {
   }
 });
 
+app.get("/api/config", (req, res) => {
+
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+    res.setHeader("X-Accel-Buffering", "no");
+    res.flushHeaders();
+
+    res.write(`event: live\n`);
+    res.write(`data: ${JSON.stringify(live)}\n\n`);
+
+    const leaderboard = getLeaderBoardData();
+    res.write(`event: leaderboard\n`);
+    res.write(`data: ${JSON.stringify(leaderboard)}\n\n`);
+
+    // Ajout de la connexion
+    clientOnline.add(res);
+    console.log("client connecté " + clientOnline.size);
+
+    // Nettoyer à la déconnexion
+    req.on("close", () => {
+      clientOnline.delete(res);
+      console.log("client deco");
+    });
+});
+
 function sendToUser(user, property, data) {
   if (clients.has(user)) {
     for (const res of clients.get(user)) {
@@ -131,18 +104,98 @@ function sendToUser(user, property, data) {
   }
 }
 
-function sendToAllUser(property, data) {
-  for (const res of clients) {
-    res.write(`event: ${property}\n`);
-    res.write(`data: ${data}\n\n`);
+function sendToAllUsers(property, data) {
+  for (const [user, connections] of clients.entries()) {
+    for (const res of connections) {
+      res.write(`event: ${property}\n`);
+      res.write(`data: ${data}\n\n`);
+    }
   }
 }
 
-/* END SSE */
+function sendConfig(property, data) {
+  for (const res of clientOnline) {
+    res.write(`event: ${property}\n`);
+    res.write(`data: ${JSON.stringify(data)}\n\n`);
+  }
+}
 
-app.get("/api/me", authenticateUser, async (req, res) => {
-  return res.json({ success: true, result: req.user });
+/* SECURITY */
+
+function authenticateUser(req, res, next) {
+    const authHeader = req.headers["authorization"];
+
+    // Vérifie la présence du header
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res.status(401).json({ error: "Token manquant ou invalide" });
+    }
+
+    const token = authHeader.split(" ")[1];
+    if (!token || !tokens[token]) {
+      return res.status(401).json({ error: "Token invalide ou expiré" });
+    }
+
+    req.user = tokens[token].display_name;
+    next();
+
+    /*
+    try {
+        // Vérifie et décode le token avec ta clé secrète
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        // On attache le login au request pour les routes suivantes
+        req.user = decoded.displayName;
+
+        next(); // passe à la route suivante
+    } catch (err) {
+        console.error("Erreur JWT:", err.message);
+        return res.status(401).json({ error: "Token invalide ou expiré" });
+    }
+    */
+}
+
+/* API ROUTES */
+
+app.post("/api/auth", async (req, res) => {
+  const { access_token } = req.body;
+
+  if (!access_token) {
+    return res.status(401).json({ error: "Access token needed" });
+  }
+
+  // Récup infos user Twitch
+  const resp = await fetch("https://api.twitch.tv/helix/users", {
+    headers: {
+      "Authorization": `Bearer ${access_token}`,
+      "Client-Id": process.env.VITE_CLIENT_ID
+    }
+  });
+
+  const data = await resp.json();
+  const user = data.data[0];
+  let uuid = uuidv4();
+
+  tokens[uuid] = user;
+
+  /*
+  // Génère un JWT signé
+  const token = jwt.sign(
+    {
+      id: user.id,
+      login: user.login,
+      displayName: user.display_name,
+      profileImage: user.profile_image_url,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: "10h" }
+  );
+  */
+
+
+  res.json({ token: uuid });
 });
+
+/* GLOBAL / CONFIG */
 
 app.get("/api/quests", authenticateUser, async (req, res) => {
   const quests = getCache("quests");
@@ -150,8 +203,13 @@ app.get("/api/quests", authenticateUser, async (req, res) => {
 });
 
 app.get("/api/leaderboard", authenticateUser, async (req, res) => {
-  const leaderboard = getCache("leaderboard");
+  const leaderboard = getLeaderBoardData();
   return res.json({ success: true, result: leaderboard });
+});
+
+app.get("/api/players", authenticateUser, async (req, res) => {
+  const players = getAllUsers();
+  return res.json({ success: true, result: players });
 });
 
 app.get("/api/equipmentConfig", authenticateUser, async (req, res) => {
@@ -162,6 +220,45 @@ app.get("/api/equipmentConfig", authenticateUser, async (req, res) => {
 app.get("/api/classesConfig", authenticateUser, async (req, res) => {
   const classesConfig = getCache("classesConfig");
   return res.json({ success: true, result: classesConfig });
+});
+
+app.get("/api/refreshShopTimer", authenticateUser, async (req, res) => {
+  const refreshShopTimer = getCache("refreshShopTimer");
+  return res.json({ success: true, result: refreshShopTimer });
+});
+
+app.post("/api/armory", authenticateUser, async (req, res) => {
+
+  if (req.body.user !== undefined) {
+    // retrieve equip
+    let equipment = getUserCache(req.body.user, "equipment");
+     if (!equipment) {
+      equipment = await sendToWebSocket({"user": req.body.user, "action": "equipment"});
+      equipment = equipment.data;
+    }
+
+    // retrieve class
+    let classe = getUserCache(req.body.user, "class");
+    if (!classe) {
+      classe = await sendToWebSocket({"user": req.body.user, "action": "class"});
+      classe = classe.data;
+    }
+
+    // retrieve level
+    let level = getUserCache(req.body.user, "level");
+    if (!level) {
+      level = await sendToWebSocket({"user": req.body.user, "action": "level"});
+      level = level.data;
+    }
+    return res.json({ success: true, result: { equipment, classe, level} });
+  }
+  return res.json({ success: false});
+});
+
+/* USER SPECIFIC */
+
+app.get("/api/me", authenticateUser, async (req, res) => {
+  return res.json({ success: true, result: req.user });
 });
 
 app.get("/api/progress", authenticateUser, async (req, res) => {
@@ -302,12 +399,9 @@ wss.on('connection', (ws) => {
     const json = JSON.parse(msg);
     const { requestId, user, action, status, data } = json;
 
-    console.log(requestId);
-    console.log(user);
-    console.log(action);
-    console.log(status);
-    console.log(data);
+    console.log("requestId=" + requestId + " | user=" + user +" | action=" + action +" | status=" + status +" | data=" + data);
     
+    /* specific actions */
     if (action == "reset") {
       clearCache();
       clearUserCache();
@@ -315,13 +409,40 @@ wss.on('connection', (ws) => {
     }
 
     if (action == "live") {
-      setCache(action, data);
-      sendToAllUser(action, data);
+      live = data;
+      sendConfig(action, data);
       return;
     }
 
+    /* handle leaderboard case */
+    if (action == "leaderboard" && user == null) {
+      const leaderboardData = JSON.parse(data);
+      Object.entries(leaderboardData).forEach(([user, userData]) => {
+        setUserCache(user, action, userData);
+      });
+      return;
+    }
+
+    if (action == "refreshShopTimer") {
+      const refreshTimer = JSON.parse(data);
+      setCache(action, refreshTimer);
+      sendConfig(action, refreshTimer);
+      clearShop();
+      sendToAllUsers("shop", null);
+      return;
+    }
+
+    /* generic global action */
     if (user == null) {
       setCache(action, data);
+      return;
+    }
+
+    /* user leaderboard update */
+    if (action == "leaderboard") {
+      const leaderboardData = JSON.parse(data);
+      setUserCache(user, action, leaderboardData);
+      sendConfig(action, [{ user: user, ...leaderboardData }]);
       return;
     }
 
@@ -331,7 +452,7 @@ wss.on('connection', (ws) => {
     }
     
     if (pendingRequests.has(requestId)) {
-      console.log("resolve and delete request id:" + requestId);
+      console.log("resolve and delete request id:" + requestId + " data=" + data);
       pendingRequests.get(requestId)({status, data}); // On résout la promesse
       pendingRequests.delete(requestId);
     }
@@ -340,30 +461,11 @@ wss.on('connection', (ws) => {
 
   ws.on('close', () => {
     isConnected = false;
-    console.log('Client disconnected');
+    console.log('StreamerBot disconnected');
   });
 });
 
-async function sendToWebSocket(request) {
-  let requestId = uuidv4();
-  
-  if (isConnected) {
-    wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify({requestId, request}));
-      }
-    });
-  }
-  else
-    {
-      console.log("queue request:" + request.action.toString());
-      if (!messageQueue.includes(request)) {
-        // TODO: unicité sur la request
-        messageQueue.push(request);
-        console.log("queue lengh=" + messageQueue.length);
-      }
-  }
-
+async function waitWebSocketResponse(requestId) {
   // Attente de la réponse
   return new Promise((resolve, reject) => {
     pendingRequests.set(requestId, resolve);
@@ -371,17 +473,54 @@ async function sendToWebSocket(request) {
     setTimeout(() => {
       if (pendingRequests.has(requestId)) {
         pendingRequests.delete(requestId);
-        console.log("request action " +  request + " pending with id:" + requestId);
-        resolve({status: "PENDING", data: "\"Action mise en attente.\""});
+        console.log("action pending with id:" + requestId);
+        resolve({status: "KO", data: "\"Une erreur est survenue :(\""});
         //reject("Timeout: no response from StreamerBot");
       }
     }, 15000);
   });
 }
 
-/* INIT VARS */
+async function sendToWebSocket(request) {
+  let requestId = uuidv4();
 
-setCache("live", "off");
+  if (isConnected) {
+    for (const client of wss.clients) {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify({ requestId, request }));
+        // ici on retourne bien la promesse
+        return waitWebSocketResponse(requestId);
+      }
+    }
+  }
+  else if (live == "on") { // live is on but WS is disconnected
+      console.log("queue request:" + request.action.toString());
+      if (!messageQueue.includes(request)) {
+        // TODO: unicité sur la request
+        messageQueue.push(request);
+        console.log("queue lengh=" + messageQueue.length);
+        return {status: "PENDING", data: "\"Action mise en attente.\""};
+      }
+  }
+  return Promise.resolve({ status: "KO", data: "\"Le casino est fermé\"" });
+}
+
+server.on("upgrade", (req, socket, head) => {
+  const { query } = url.parse(req.url, true);
+  const token = query.token;
+
+  if (token !== process.env.JWT_SECRET) {
+    console.warn("❌ Connexion WebSocket refusée : token invalide");
+    socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
+    socket.destroy();
+    return;
+  }
+
+  // Si token OK → on accepte la connexion
+  wss.handleUpgrade(req, socket, head, (ws) => {
+    wss.emit("connection", ws, req);
+  });
+});
 
 /* START SERVER AT THE END OF CONFIG */
 const PORT = process.env.VITE_PORT || 3000;

@@ -50,4 +50,25 @@ function clearCache() {
   cache = {};
 }
 
-module.exports = { setCache, getCache, clearCache, setUserCache, getUserCache, clearUserCache };
+function getLeaderBoardData() {
+  return Object.entries(userCache).map(([user, data]) => {
+    const { MiniGames = 0, DailyQuests = 0, WeeklyQuests = 0 } =
+      data?.leaderboard?.data || {};
+
+    return { user, MiniGames, DailyQuests, WeeklyQuests };
+  });
+}
+
+function clearShop() {
+  for (const user in userCache) {
+    if (userCache[user].shop) {
+      delete userCache[user].shop;
+    }
+  }
+}
+
+function getAllUsers() {
+  return Object.keys(userCache);
+}
+
+module.exports = { setCache, getCache, clearCache, setUserCache, getUserCache, clearUserCache, getLeaderBoardData, getAllUsers, clearShop };

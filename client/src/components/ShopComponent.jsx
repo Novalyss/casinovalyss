@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
+import { useConfig } from "./ConfigProvider";
 import { useEvents } from "../components/EventsProvider";
-import { apiRequest } from "../components/api";
+import { apiRequest } from "../lib/api";
 import { useToast } from "../components/Toaster";
 import ItemCard from "../components/ItemCard";
 import ActionButton from "../components/ActionButton";
@@ -8,11 +9,14 @@ import ActionButton from "../components/ActionButton";
 
 export default function ShopComponent() {
     const { shop } = useEvents();
+    const { online } = useConfig();
     const { addToast } = useToast();
 
      useEffect(() => {
-        apiRequest("/shop");
-      }, []);
+      if (!shop) {
+          apiRequest("/shop");
+        }
+      }, [shop]);
 
     async function buyItem(item) {
         await apiRequest("/buy", "POST", {itemId: item.Id}, (data) => {
@@ -37,27 +41,38 @@ export default function ShopComponent() {
     };
 
     if (!shop) {
-        return <div className="text-center p-4">⏳ Chargement...</div>;
+        return <div className="text-center p-4">Chargement...</div>;
     }
 
     return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {shop.map((item) => (
-          <div key={item.Id} className="flex flex-col items-center">
-            <ItemCard item={item} />
-            <ActionButton
-              onClick={async () => buyItem(item)}
-              className="mt-2 px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition">
-              {item.Cost} 💰
-              Acheter
-            </ActionButton>
-          </div>
-        ))}
-        <ActionButton
-            onClick={async () => refreshShop()}
-            className="mt-2 px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition">
-            20000 💰
-            Refresh
-        </ActionButton>
-    </div>);
+      {shop.map((item) => (
+        <div key={item.Id} className="flex flex-col items-center">
+          <ItemCard item={item} />
+          <ActionButton
+            onClick={async () => buyItem(item)}
+            disabled={online === "off"}
+            className={`mt-2 px-3 py-1 text-sm rounded transition ${
+              online === "off"
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-gray-200"
+            }`}
+          >
+            {item.Cost} 💰 Acheter
+          </ActionButton>
+        </div>
+      ))}
+      <ActionButton
+        onClick={async () => refreshShop()}
+        disabled={online === "off"}
+        className={`mt-2 px-3 py-1 text-sm rounded transition ${
+          online === "off"
+            ? "opacity-50 cursor-not-allowed"
+            : "hover:bg-gray-200"
+        }`}
+      >
+        20000 💰 Refresh
+      </ActionButton>
+    </div>
+  );
 }

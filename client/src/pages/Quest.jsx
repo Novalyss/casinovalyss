@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useEvents } from "../components/EventsProvider";
-import { apiRequest } from "../components/api";
+import { apiRequest } from "../lib/api";
 
 export default function Quests() {
 const [quests, setQuests] = useState({ daily: {}, weekly: {} });
@@ -46,6 +46,13 @@ const renderPlayerQuests = (allQuests, playerProgress) =>
               style={{ width: `${Math.min((current / max) * 100, 100)}%` }}
             ></div>
           </div>
+
+          {/* Récompense */}
+          <div className="text-right">
+            <span className="text-yellow-600 font-semibold">
+              {quest.Reward} 💰
+            </span>
+          </div>
         </div>
       );
     });
@@ -62,7 +69,11 @@ const renderPlayerQuests = (allQuests, playerProgress) =>
         <div className="space-y-4">
           {Object.keys(questProgress.daily || {}).length > 0
             ? renderPlayerQuests(quests.daily, questProgress.daily)
-            : <p className="text-gray-500 text-sm">Aucune quête quotidienne active.</p>}
+            : (
+              <p className="text-gray-500 text-sm">
+                Aucune quête quotidienne active.
+              </p>
+            )}
         </div>
       </div>
 
@@ -72,9 +83,13 @@ const renderPlayerQuests = (allQuests, playerProgress) =>
           📆 Quêtes hebdomadaires
         </h2>
         <div className="space-y-4">
-          {Object.keys(questProgress.daily || {}).length > 0
+          {Object.keys(questProgress.weekly || {}).length > 0
             ? renderPlayerQuests(quests.weekly, questProgress.weekly)
-            : <p className="text-gray-500 text-sm">Aucune quête hebdomadaire active.</p>}
+            : (
+              <p className="text-gray-500 text-sm">
+                Aucune quête hebdomadaire active.
+              </p>
+            )}
         </div>
       </div>
     </div>

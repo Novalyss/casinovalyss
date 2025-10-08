@@ -21,12 +21,21 @@ const classImage = {
   Brigand: "../assets/class/Brigand.png"
 }
 
-export default function CharacterComponent() {
-  const { equipment, classe, level } = useEvents();
-  const playerName = localStorage.getItem("userInfo");
+export default function CharacterComponent({
+  playerName,
+  readOnly = false,
+  equipment: equipmentProp,
+  classe: classeProp,
+  level: levelProp,
+}) {
+    const { equipment: equipmentSSE, classe: classeSSE, level: levelSSE } = useEvents();
+
+    const equipment = equipmentProp ?? equipmentSSE;
+    const classe = classeProp ?? classeSSE;
+    const level = levelProp ?? levelSSE;
 
   if (!equipment || !classe || !level) {
-      return <div className="text-center p-4">⏳ Chargement...</div>;
+      return <div className="text-center p-4">Chargement...</div>;
   }
 
   return (
@@ -36,12 +45,12 @@ export default function CharacterComponent() {
       {classe && classe !== "null" && (
         <img
           src={classImage[classe]}
-          alt="Classe"
+          alt=""
           className="absolute inset-0 w-full h-full object-contain opacity-60 pointer-events-none"
         />
       )}
 
-      {/* Player Plate */}
+      {/* Player Name Plate */}
       <div className="row-start-1 row-end-2 col-start-2 col-end-4 flex items-start">
         <div
           className="w-full bg-gradient-to-b from-yellow-200 to-yellow-400 
@@ -58,6 +67,7 @@ export default function CharacterComponent() {
           type="Helm"
           item={equipment["Helm"]}
           icon={typeIcons["Helm"]}
+          readOnly={readOnly}
         />
       </div>
 
@@ -67,6 +77,7 @@ export default function CharacterComponent() {
           type="Gloves"
           item={equipment["Gloves"]}
           icon={typeIcons["Gloves"]}
+          readOnly
         />
       </div>
 
@@ -76,6 +87,7 @@ export default function CharacterComponent() {
           type="Weapon"
           item={equipment["Weapon"]}
           icon={typeIcons["Weapon"]}
+          readOnly={readOnly}
         />
       </div>
 
@@ -85,6 +97,7 @@ export default function CharacterComponent() {
           type="Chest"
           item={equipment["Chest"]}
           icon={typeIcons["Chest"]}
+          readOnly={readOnly}
         />
       </div>
 
@@ -94,6 +107,7 @@ export default function CharacterComponent() {
           type="Legs"
           item={equipment["Legs"]}
           icon={typeIcons["Legs"]}
+          readOnly={readOnly}
         />
       </div>
 
@@ -103,6 +117,7 @@ export default function CharacterComponent() {
           type="Boots"
           item={equipment["Boots"]}
           icon={typeIcons["Boots"]}
+          readOnly={readOnly}
         />
       </div>
 

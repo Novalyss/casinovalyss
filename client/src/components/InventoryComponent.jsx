@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { useEvents } from "./EventsProvider";
-import { apiRequest } from "./api";
+import { apiRequest } from "../lib/api";
 import ItemCard from "./ItemCard";
+import { useConfig } from "./ConfigProvider";
 
 export default function InventoryComponent() {
     const { inventory } = useEvents();
     const [menu, setMenu] = useState(null);
     const menuRef = useRef(null);
+    const { online } = useConfig();
 
     useEffect(() => {
       function handleClickOutside(e) {
@@ -30,7 +32,7 @@ export default function InventoryComponent() {
     const handleClose = () => setMenu(null);
 
     if (!inventory) {
-        return <div className="text-center p-4">⏳ Chargement...</div>;
+        return <div className="text-center p-4">Chargement...</div>;
     }
 
     return (
@@ -45,7 +47,7 @@ export default function InventoryComponent() {
         </div>
       ))}
 
-      {menu && (
+      {online === "on" && menu && (
         <div
           ref={menuRef}
           style={{
@@ -53,7 +55,7 @@ export default function InventoryComponent() {
             top: menu.y,
             left: menu.x,
           }}
-          className="z-50 p-2 rounded bg-gray-800 text-white shadow-lg"
+          className="z-50 p-2 rounded shadow-lg"
         >
         <button
           onClick={async () => {
