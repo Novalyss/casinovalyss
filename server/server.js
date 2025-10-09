@@ -35,11 +35,6 @@ const messageQueue = [];
 let isConnected = false;
 let live = "off";
 
-app.get("/ws", (req, res) => {
-  console.log("get /ws");
-  res.status(400).send("WebSocket upgrade required");
-});
-
 /* SSE */
 app.get("/api/events", (req, res) => {
 
