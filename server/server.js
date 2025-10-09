@@ -427,9 +427,12 @@ async function sendToWebSocket(request) {
 }
 
 server.on("upgrade", (req, socket, head) => {
+  console.log("CONNEXION UPGRADE");
 
    // Vérifie le header Upgrade
-  if (req.headers["upgrade"] !== "websocket") {
+  const upgradeHeader = req.headers["upgrade"];
+  if (!upgradeHeader || upgradeHeader.toLowerCase() !== "websocket") {
+    console.warn("❌ not websocket");
     socket.write("HTTP/1.1 400 Bad Request\r\n\r\n");
     socket.destroy();
     return;
@@ -438,6 +441,7 @@ server.on("upgrade", (req, socket, head) => {
   // On ne gère que les connexions sur /ws
   const { pathname } = new URL(req.url, `https://${req.headers.host}`);
   if (pathname !== "/ws") {
+    console.warn("❌ not /ws");
     socket.destroy();
     return;
   }
