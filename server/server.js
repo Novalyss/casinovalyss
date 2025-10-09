@@ -25,8 +25,8 @@ const server = http.createServer(app);
 const router = express.Router();
 app.use(router)
 
-const wss = new WebSocket.Server({ server });
-//const wss = new WebSocket.Server({ noServer: true });
+//const wss = new WebSocket.Server({ server });
+const wss = new WebSocket.Server({ noServer: true });
 const pendingRequests = new Map();
 const tokens = new Map();
 const clients = new Map();
@@ -506,24 +506,28 @@ async function sendToWebSocket(request) {
   return Promise.resolve({ status: "KO", data: "\"Le casino est fermé\"" });
 }
 
-/*
 server.on("upgrade", (req, socket, head) => {
+  const { pathname } = new URL(req.url, `https://${req.headers.host}`);
   const { query } = url.parse(req.url, true);
   const token = query.token;
 
-  if (token !== process.env.JWT_SECRET) {
-    console.warn("❌ Connexion WebSocket refusée : token invalide");
-    socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
-    socket.destroy();
-    return;
-  }
-
   // Si token OK → on accepte la connexion
-  wss.handleUpgrade(req, socket, head, (ws) => {
-    wss.emit("connection", ws, req);
-  });
+  if (pathname === "/ws") {
+
+    if (token !== process.env.JWT_SECRET) {
+      console.warn("❌ Connexion WebSocket refusée : token invalide");
+      socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
+      socket.destroy();
+      return;
+    }
+
+    wss.handleUpgrade(req, socket, head, (ws) => {
+      wss.emit("connection", ws, req);
+    });
+  } else {
+    socket.destroy(); // refuse les autres upgrades
+  }
 });
-*/
 
 /* START SERVER AT THE END OF CONFIG */
 const PORT = process.env.VITE_PORT || 3000;
