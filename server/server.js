@@ -375,11 +375,6 @@ app.post("/api/unequip", authenticateUser, async (req, res) => {
   return res.json({ success: result.status, data: result.data });
 });
 
-/* This API MUST be at the end */
-app.get(/.*/, (req, res) => {
-  res.sendFile(indexFile);
-});
-
 /* WebSocket */
 
 async function waitWebSocketResponse(requestId) {
@@ -541,6 +536,11 @@ wss.on('connection', (ws) => {
     isConnected = false;
     console.log('StreamerBot disconnected');
   });
+});
+
+/* This API MUST be at the end */
+app.get(/.*/, (req, res) => {
+  res.sendFile(indexFile);
 });
 
 /* START SERVER AT THE END OF CONFIG */
