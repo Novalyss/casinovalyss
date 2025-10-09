@@ -35,6 +35,42 @@ const messageQueue = [];
 let isConnected = false;
 let live = "off";
 
+server.on("upgrade", (req, socket, head) => {
+  console.log("CONNEXION UPGRADE");
+
+   // Vérifie le header Upgrade
+  const upgradeHeader = req.headers["upgrade"];
+  if (!upgradeHeader || upgradeHeader.toLowerCase() !== "websocket") {
+    console.warn("❌ not websocket");
+    socket.write("HTTP/1.1 400 Bad Request\r\n\r\n");
+    socket.destroy();
+    return;
+  }
+
+  // On ne gère que les connexions sur /ws
+  const { pathname } = new URL(req.url, `https://${req.headers.host}`);
+  if (pathname !== "/ws") {
+    console.warn("❌ not /ws");
+    socket.destroy();
+    return;
+  }
+
+  const { query } = url.parse(req.url, true);
+  const token = query.token;
+
+  // Si token OK → on accepte la connexion
+  if (token !== process.env.JWT_SECRET) {
+    console.warn("❌ Connexion WebSocket refusée : token invalide");
+    socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
+    socket.destroy();
+    return;
+  }
+
+  wss.handleUpgrade(req, socket, head, (ws) => {
+    wss.emit("connection", ws, req);
+  });
+});
+
 /* SSE */
 app.get("/api/events", (req, res) => {
 
@@ -416,42 +452,6 @@ async function sendToWebSocket(request) {
   }
   return Promise.resolve({ status: "KO", data: "\"Le casino est fermé\"" });
 }
-
-server.on("upgrade", (req, socket, head) => {
-  console.log("CONNEXION UPGRADE");
-
-   // Vérifie le header Upgrade
-  const upgradeHeader = req.headers["upgrade"];
-  if (!upgradeHeader || upgradeHeader.toLowerCase() !== "websocket") {
-    console.warn("❌ not websocket");
-    socket.write("HTTP/1.1 400 Bad Request\r\n\r\n");
-    socket.destroy();
-    return;
-  }
-
-  // On ne gère que les connexions sur /ws
-  const { pathname } = new URL(req.url, `https://${req.headers.host}`);
-  if (pathname !== "/ws") {
-    console.warn("❌ not /ws");
-    socket.destroy();
-    return;
-  }
-
-  const { query } = url.parse(req.url, true);
-  const token = query.token;
-
-  // Si token OK → on accepte la connexion
-  if (token !== process.env.JWT_SECRET) {
-    console.warn("❌ Connexion WebSocket refusée : token invalide");
-    socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
-    socket.destroy();
-    return;
-  }
-
-  wss.handleUpgrade(req, socket, head, (ws) => {
-    wss.emit("connection", ws, req);
-  });
-});
 
 wss.on('connection', (ws) => {
   console.log("✅ Connecté à StreamerBot");
