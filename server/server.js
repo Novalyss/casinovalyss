@@ -381,6 +381,79 @@ app.get(/.*/, (req, res) => {
 });
 
 /* WebSocket */
+
+async function waitWebSocketResponse(requestId) {
+  // Attente de la réponse
+  return new Promise((resolve, reject) => {
+    pendingRequests.set(requestId, resolve);
+
+    setTimeout(() => {
+      if (pendingRequests.has(requestId)) {
+        pendingRequests.delete(requestId);
+        console.log("action pending with id:" + requestId);
+        resolve({status: "KO", data: "\"Une erreur est survenue :(\""});
+        //reject("Timeout: no response from StreamerBot");
+      }
+    }, 15000);
+  });
+}
+
+async function sendToWebSocket(request) {
+  let requestId = uuidv4();
+
+  if (isConnected) {
+    for (const client of wss.clients) {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify({ requestId, request }));
+        // ici on retourne bien la promesse
+        return waitWebSocketResponse(requestId);
+      }
+    }
+  }
+  else if (live == "on") { // live is on but WS is disconnected
+      console.log("queue request:" + request.action.toString());
+      if (!messageQueue.includes(request)) {
+        // TODO: unicité sur la request
+        messageQueue.push(request);
+        console.log("queue lengh=" + messageQueue.length);
+        return {status: "PENDING", data: "\"Action mise en attente.\""};
+      }
+  }
+  return Promise.resolve({ status: "KO", data: "\"Le casino est fermé\"" });
+}
+
+server.on("upgrade", (req, socket, head) => {
+
+   // Vérifie le header Upgrade
+  if (req.headers["upgrade"] !== "websocket") {
+    socket.write("HTTP/1.1 400 Bad Request\r\n\r\n");
+    socket.destroy();
+    return;
+  }
+
+  // On ne gère que les connexions sur /ws
+  const { pathname } = new URL(req.url, `https://${req.headers.host}`);
+  if (pathname !== "/ws") {
+    socket.destroy();
+    return;
+  }
+
+  const { query } = url.parse(req.url, true);
+  const token = query.token;
+
+  // Si token OK → on accepte la connexion
+  if (token !== process.env.JWT_SECRET) {
+    console.warn("❌ Connexion WebSocket refusée : token invalide");
+    socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
+    socket.destroy();
+    return;
+  }
+
+  wss.handleUpgrade(req, socket, head, (ws) => {
+    wss.emit("connection", ws, req);
+  });
+});
+
 wss.on('connection', (ws) => {
   console.log("✅ Connecté à StreamerBot");
   
@@ -464,69 +537,6 @@ wss.on('connection', (ws) => {
     isConnected = false;
     console.log('StreamerBot disconnected');
   });
-});
-
-async function waitWebSocketResponse(requestId) {
-  // Attente de la réponse
-  return new Promise((resolve, reject) => {
-    pendingRequests.set(requestId, resolve);
-
-    setTimeout(() => {
-      if (pendingRequests.has(requestId)) {
-        pendingRequests.delete(requestId);
-        console.log("action pending with id:" + requestId);
-        resolve({status: "KO", data: "\"Une erreur est survenue :(\""});
-        //reject("Timeout: no response from StreamerBot");
-      }
-    }, 15000);
-  });
-}
-
-async function sendToWebSocket(request) {
-  let requestId = uuidv4();
-
-  if (isConnected) {
-    for (const client of wss.clients) {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify({ requestId, request }));
-        // ici on retourne bien la promesse
-        return waitWebSocketResponse(requestId);
-      }
-    }
-  }
-  else if (live == "on") { // live is on but WS is disconnected
-      console.log("queue request:" + request.action.toString());
-      if (!messageQueue.includes(request)) {
-        // TODO: unicité sur la request
-        messageQueue.push(request);
-        console.log("queue lengh=" + messageQueue.length);
-        return {status: "PENDING", data: "\"Action mise en attente.\""};
-      }
-  }
-  return Promise.resolve({ status: "KO", data: "\"Le casino est fermé\"" });
-}
-
-server.on("upgrade", (req, socket, head) => {
-  const { pathname } = new URL(req.url, `https://${req.headers.host}`);
-  const { query } = url.parse(req.url, true);
-  const token = query.token;
-
-  // Si token OK → on accepte la connexion
-  if (pathname === "/ws") {
-
-    if (token !== process.env.JWT_SECRET) {
-      console.warn("❌ Connexion WebSocket refusée : token invalide");
-      socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
-      socket.destroy();
-      return;
-    }
-
-    wss.handleUpgrade(req, socket, head, (ws) => {
-      wss.emit("connection", ws, req);
-    });
-  } else {
-    socket.destroy(); // refuse les autres upgrades
-  }
 });
 
 /* START SERVER AT THE END OF CONFIG */
