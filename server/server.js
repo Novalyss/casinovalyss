@@ -539,7 +539,7 @@ wss.on('connection', (ws) => {
 });
 
 /* This API MUST be at the end */
-app.get(/.*/, (req, res) => {
+app.get(/^(?!\/ws).*$/, (req, res) => {
   res.sendFile(indexFile);
 });
 
