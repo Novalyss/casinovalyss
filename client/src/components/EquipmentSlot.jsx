@@ -2,13 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { useEvents } from "./EventsProvider";
 import { apiRequest } from "../lib/api";
 import ItemCard from "./ItemCard";
-import { useConfig } from "./ConfigProvider";
 
 export default function EquipmentSlot({ type, item, icon, readOnly }) {
   const [menu, setMenu] = useState(null);
   const menuRef = useRef(null);
-  const { inventory } = useEvents();
-  const { online } = useConfig();
+  const { inventory, online } = useEvents();
 
   // Fermer le menu si on clique ailleurs
   useEffect(() => {

@@ -30,18 +30,15 @@ const wss = new WebSocket.Server({ noServer: true });
 const pendingRequests = new Map();
 const tokens = new Map();
 const clients = new Map();
-const clientOnline = new Set();
 const messageQueue = [];
 let isConnected = false;
 let live = "off";
 
 server.on("upgrade", (req, socket, head) => {
-  console.log("CONNEXION UPGRADE");
 
    // Vérifie le header Upgrade
   const upgradeHeader = req.headers["upgrade"];
   if (!upgradeHeader || upgradeHeader.toLowerCase() !== "websocket") {
-    console.warn("❌ not websocket");
     socket.write("HTTP/1.1 400 Bad Request\r\n\r\n");
     socket.destroy();
     return;
@@ -50,7 +47,6 @@ server.on("upgrade", (req, socket, head) => {
   // On ne gère que les connexions sur /ws
   const { pathname } = new URL(req.url, `https://${req.headers.host}`);
   if (pathname !== "/ws") {
-    console.warn("❌ not /ws");
     socket.destroy();
     return;
   }
@@ -85,13 +81,21 @@ app.get("/api/events", (req, res) => {
     res.setHeader("X-Accel-Buffering", "no");
     res.flushHeaders();
 
+    res.write(`event: live\n`);
+    res.write(`data: ${JSON.stringify(live)}\n\n`);
+
+    res.write(`event: refreshShopTimer\n`);
+    res.write(`data: ${JSON.stringify(getCache("refreshShopTimer"))}\n\n`);
+
+    const leaderboard = getLeaderBoardData();
+    res.write(`event: leaderboard\n`);
+    res.write(`data: ${JSON.stringify(leaderboard)}\n\n`);
+
     // Ajout de la connexion dans la Map
     if (!clients.has(user)) {
       clients.set(user, new Set());
     }
     clients.get(user).add(res);
-
-    console.log(`👤 ${user} connecté (${clients.get(user).size} connexions)`);
 
     // Nettoyer à la déconnexion
     req.on("close", () => {
@@ -99,44 +103,17 @@ app.get("/api/events", (req, res) => {
       if (clients.get(user).size === 0) {
         clients.delete(user);
       }
-      console.log(`❌ ${user} déconnecté`);
     });
   } catch (err) {
     return res.status(401).end("Unauthorized");
   }
 });
 
-app.get("/api/config", (req, res) => {
-
-    res.setHeader("Content-Type", "text/event-stream");
-    res.setHeader("Cache-Control", "no-cache");
-    res.setHeader("Connection", "keep-alive");
-    res.setHeader("X-Accel-Buffering", "no");
-    res.flushHeaders();
-
-    res.write(`event: live\n`);
-    res.write(`data: ${JSON.stringify(live)}\n\n`);
-
-    const leaderboard = getLeaderBoardData();
-    res.write(`event: leaderboard\n`);
-    res.write(`data: ${JSON.stringify(leaderboard)}\n\n`);
-
-    // Ajout de la connexion
-    clientOnline.add(res);
-    console.log("client connecté " + clientOnline.size);
-
-    // Nettoyer à la déconnexion
-    req.on("close", () => {
-      clientOnline.delete(res);
-      console.log("client deco");
-    });
-});
-
 function sendToUser(user, property, data) {
   if (clients.has(user)) {
     for (const res of clients.get(user)) {
       res.write(`event: ${property}\n`);
-      res.write(`data: ${data}\n\n`);
+      res.write(`data: ${JSON.stringify(data)}\n\n`);
     }
   }
 }
@@ -145,15 +122,8 @@ function sendToAllUsers(property, data) {
   for (const [user, connections] of clients.entries()) {
     for (const res of connections) {
       res.write(`event: ${property}\n`);
-      res.write(`data: ${data}\n\n`);
+      res.write(`data: ${JSON.stringify(data)}\n\n`);
     }
-  }
-}
-
-function sendConfig(property, data) {
-  for (const res of clientOnline) {
-    res.write(`event: ${property}\n`);
-    res.write(`data: ${JSON.stringify(data)}\n\n`);
   }
 }
 
@@ -174,21 +144,6 @@ function authenticateUser(req, res, next) {
 
     req.user = tokens[token].display_name;
     next();
-
-    /*
-    try {
-        // Vérifie et décode le token avec ta clé secrète
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        // On attache le login au request pour les routes suivantes
-        req.user = decoded.displayName;
-
-        next(); // passe à la route suivante
-    } catch (err) {
-        console.error("Erreur JWT:", err.message);
-        return res.status(401).json({ error: "Token invalide ou expiré" });
-    }
-    */
 }
 
 /* API ROUTES */
@@ -213,22 +168,6 @@ app.post("/api/auth", async (req, res) => {
   let uuid = uuidv4();
 
   tokens[uuid] = user;
-
-  /*
-  // Génère un JWT signé
-  const token = jwt.sign(
-    {
-      id: user.id,
-      login: user.login,
-      displayName: user.display_name,
-      profileImage: user.profile_image_url,
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: "10h" }
-  );
-  */
-
-
   res.json({ token: uuid });
 });
 
@@ -259,11 +198,6 @@ app.get("/api/classesConfig", authenticateUser, async (req, res) => {
   return res.json({ success: true, result: classesConfig });
 });
 
-app.get("/api/refreshShopTimer", authenticateUser, async (req, res) => {
-  const refreshShopTimer = getCache("refreshShopTimer");
-  return res.json({ success: true, result: refreshShopTimer });
-});
-
 app.post("/api/armory", authenticateUser, async (req, res) => {
 
   if (req.body.user !== undefined) {
@@ -272,13 +206,15 @@ app.post("/api/armory", authenticateUser, async (req, res) => {
      if (!equipment) {
       equipment = await sendToWebSocket({"user": req.body.user, "action": "equipment"});
       equipment = equipment.data;
+    } else {
+      equipment = JSON.stringify(equipment);
     }
 
     // retrieve class
     let classe = getUserCache(req.body.user, "class");
     if (!classe) {
       classe = await sendToWebSocket({"user": req.body.user, "action": "class"});
-      classe = classe.data;
+      classe = JSON.parse(classe.data);
     }
 
     // retrieve level
@@ -286,7 +222,10 @@ app.post("/api/armory", authenticateUser, async (req, res) => {
     if (!level) {
       level = await sendToWebSocket({"user": req.body.user, "action": "level"});
       level = level.data;
+    } else {
+      level = JSON.stringify(level);
     }
+
     return res.json({ success: true, result: { equipment, classe, level} });
   }
   return res.json({ success: false});
@@ -483,7 +422,7 @@ wss.on('connection', (ws) => {
 
     if (action == "live") {
       live = data;
-      sendConfig(action, data);
+      sendToAllUsers(action, data);
       return;
     }
 
@@ -499,9 +438,9 @@ wss.on('connection', (ws) => {
     if (action == "refreshShopTimer") {
       const refreshTimer = JSON.parse(data);
       setCache(action, refreshTimer);
-      sendConfig(action, refreshTimer);
       clearShop();
       sendToAllUsers("shop", null);
+      sendToAllUsers("refreshShopTimer", refreshTimer);
       return;
     }
 
@@ -515,13 +454,13 @@ wss.on('connection', (ws) => {
     if (action == "leaderboard") {
       const leaderboardData = JSON.parse(data);
       setUserCache(user, action, leaderboardData);
-      sendConfig(action, [{ user: user, ...leaderboardData }]);
+      sendToAllUsers(action, [{ user: user, ...leaderboardData }]);
       return;
     }
 
     if (status == "OK") {
-      setUserCache(user, action, data);
-      sendToUser(user, action, data);
+      setUserCache(user, action, JSON.parse(data));
+      sendToUser(user, action, JSON.parse(data));
     }
     
     if (pendingRequests.has(requestId)) {

@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { useConfig } from "./ConfigProvider";
 import { useEvents } from "../components/EventsProvider";
 import { apiRequest } from "../lib/api";
 import { useToast } from "../components/Toaster";
@@ -8,8 +7,7 @@ import ActionButton from "../components/ActionButton";
 
 
 export default function ShopComponent() {
-    const { shop } = useEvents();
-    const { online } = useConfig();
+    const { shop, online } = useEvents();
     const { addToast } = useToast();
 
      useEffect(() => {

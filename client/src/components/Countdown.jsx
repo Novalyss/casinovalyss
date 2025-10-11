@@ -47,8 +47,8 @@ export default function Countdown({ refreshTimer }) {
     }
     finishedRef.current = false;
 
-    if (!refreshTimer) {
-      setTimeLeftString("???");
+    if (!refreshTimer || refreshTimer === "null") {
+      setTimeLeftString("Au prochain live !");
       return;
     }
 
@@ -85,7 +85,7 @@ export default function Countdown({ refreshTimer }) {
       if (diff <= 0) {
         if (!finishedRef.current) {
           finishedRef.current = true;
-          setTimeLeftString("⏰ Terminé !");
+          setTimeLeftString("Au prochain live !");
         }
         // clear interval
         if (intervalRef.current) {
@@ -112,7 +112,7 @@ export default function Countdown({ refreshTimer }) {
 
   return (
     <div className="text-center text-lg font-semibold">
-      🕒 Prochain refresh dans : <span className="font-mono">{timeLeftString}</span>
+      🕒 Prochain refresh : <span className="font-mono">{timeLeftString}</span>
     </div>
   );
 }

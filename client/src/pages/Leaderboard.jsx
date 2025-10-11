@@ -1,9 +1,9 @@
 import { useMemo } from "react";
-import { useConfig } from "../components/ConfigProvider";
+import { useEvents } from "../components/EventsProvider";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 export default function Leaderboard() {
-  const { leaderboardData } = useConfig();
+  const { leaderboardData } = useEvents();
   const playerName = localStorage.getItem("userInfo");
 
   const leaderboard = useMemo(() => {

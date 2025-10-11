@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import { useConfig } from "./ConfigProvider";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
-  const { online } = useConfig();
 
   return (
     <header className="">
@@ -19,11 +17,6 @@ export default function Header() {
         <Link to="https://www.twitch.tv/novalyss" target="_blank" >
           <img src="/assets/twitch-logo.png" alt="Twitch" className="h-10 w-auto" />
         </Link>
-        {online === "on" ? (
-          <span>le casino est ouvert !</span>
-        ) : (
-          <span>le casino est fermé !</span>
-        )}
 
         {/* Menu desktop */}
         <nav className="hidden md:flex space-x-4">

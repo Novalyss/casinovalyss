@@ -10,18 +10,16 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
 import {EventsProvider} from "./components/EventsProvider";
-import { OnlineProvider } from "./components/ConfigProvider";
 
 export default function App() {
   return (
     <BrowserRouter>
       <div className="flex flex-col min-h-screen">
-        <OnlineProvider>
           <Header />
           <main className="flex-grow">
             <Routes>
               <Route path="/auth" element={<Auth />} />
-              <Route element={<EventsProvider />}> 
+              <Route element={<EventsProvider />}>
                 <Route element={<ProtectedRoute />}>
                   <Route path="/shop" element={<Shop />} />
                   <Route path="/inventory" element={<Inventory />} />
@@ -34,7 +32,6 @@ export default function App() {
             </Routes>
           </main>
           <Footer />
-        </OnlineProvider>
       </div>
     </BrowserRouter>
   );

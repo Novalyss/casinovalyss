@@ -2,13 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { useEvents } from "./EventsProvider";
 import { apiRequest } from "../lib/api";
 import ItemCard from "./ItemCard";
-import { useConfig } from "./ConfigProvider";
 
 export default function InventoryComponent() {
-    const { inventory } = useEvents();
+    const { inventory, online } = useEvents();
     const [menu, setMenu] = useState(null);
     const menuRef = useRef(null);
-    const { online } = useConfig();
 
     useEffect(() => {
       function handleClickOutside(e) {

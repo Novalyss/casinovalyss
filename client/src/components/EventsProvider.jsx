@@ -15,6 +15,9 @@ export function EventsProvider() {
   const [level, setLevel] = useState(null);
   const [questProgress, setQuestProgress] = useState({});
   const [casinoStats, setCasinoStats] = useState({});
+  const [online, setOnline] = useState("off");
+  const [refreshTimer, setRefreshTimer] = useState();
+  const [leaderboardData, setLeaderboardData] = useState([]);
 
   useEffect(() => {
 
@@ -32,8 +35,9 @@ export function EventsProvider() {
     });
 
     eventSource.addEventListener("class", (e) => {
-      console.log("Classe du joueur mise à jour:", e.data);
-      setClasse(e.data);
+      const data = JSON.parse(e.data);
+      console.log("Classe du joueur mise à jour:", data);
+      setClasse(data);
     });
 
     eventSource.addEventListener("casinostats", (e) => {
@@ -81,6 +85,49 @@ export function EventsProvider() {
       setEquipment(dictionary);
     });
 
+    /* config */
+    eventSource.addEventListener("live", (e) => {
+      const status = JSON.parse(e.data);
+      //const status = e.data;
+      console.log("live updated", status);
+      setOnline(status);
+    });
+
+    eventSource.addEventListener("refreshShopTimer", (e) => {
+      const refreshDate = JSON.parse(e.data);
+      //const refreshDate = e.data;
+      console.log("refreshShopTimer", refreshDate);
+      setRefreshTimer(refreshDate);
+    });
+
+    eventSource.addEventListener("leaderboard", (e) => {
+      const payload = JSON.parse(e.data);
+      //const payload = e.data;
+      console.log(payload);
+
+      if (payload.length > 1) {
+        // Cas 1 : on reçoit tout le leaderboard
+        // 🔥 On clone pour garantir un nouvel array
+        setLeaderboardData([...payload]);
+      } else if (payload.length === 1) {
+        // Cas 2 : un seul user
+        const updatedUser = payload[0];
+        setLeaderboardData((prev) => {
+          const exists = prev.find((u) => u.user === updatedUser.user);
+
+          if (exists) {
+            // retourne un nouveau tableau
+            return prev.map((u) =>
+              u.user === updatedUser.user ? { ...u, ...updatedUser } : u
+            );
+          } else {
+            // ajout
+            return [...prev, updatedUser];
+          }
+        });
+      }
+    });
+
     eventSource.onerror = (err) => {
       console.error("Erreur SSE:", err);
       return;
@@ -90,7 +137,7 @@ export function EventsProvider() {
   }, []);
 
   return (
-    <EventsContext.Provider value={{ gold, shop, inventory, equipment, classe, level, questProgress, casinoStats }}>
+    <EventsContext.Provider value={{ gold, shop, inventory, equipment, classe, level, questProgress, casinoStats, online, leaderboardData, refreshTimer }}>
       {<Outlet />}
     </EventsContext.Provider>
   );
