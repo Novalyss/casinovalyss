@@ -60,12 +60,65 @@ export default function Header() {
       {/* Dropdown mobile */}
       {open && (
         <nav className="md:hidden p-4 space-y-2 text-center bg-white shadow-inner">
-          <Link onClick={() => setOpen(false)} to="/shop" className="inline-flex block hover:underline">🛍️ <span>Boutique</span></Link>
-          <Link onClick={() => setOpen(false)} to="/character" className="inline-flex block hover:underline">⚔️ <span>Personnage</span></Link>
-          <Link onClick={() => setOpen(false)} to="/armory" className="inline-flex block hover:underline">🛡️ <span>Armurerie</span></Link>
-          <Link onClick={() => setOpen(false)} to="/quest" className="inline-flex block hover:underline">📜 <span>Quêtes</span></Link>
-          <Link onClick={() => setOpen(false)} to="/leaderboard" className="inline-flex block hover:underline">🏆 <span>Leaderboard</span></Link>
-          <Link onClick={() => setOpen(false)} to="/stats" className="inline-flex block hover:underline">📊 <span>Stats</span></Link>
+          <Link
+            onClick={() => setOpen(false)}
+            to="/shop"
+            className="block hover:underline"
+          >
+            <span className="inline-flex items-center gap-1 justify-center w-full">
+              🛍️ <span>Boutique</span>
+            </span>
+          </Link>
+
+          <Link
+            onClick={() => setOpen(false)}
+            to="/character"
+            className="block hover:underline"
+          >
+            <span className="inline-flex items-center gap-1 justify-center w-full">
+              ⚔️ <span>Personnage</span>
+            </span>
+          </Link>
+
+          <Link
+            onClick={() => setOpen(false)}
+            to="/armory"
+            className="block hover:underline"
+          >
+            <span className="inline-flex items-center gap-1 justify-center w-full">
+              🛡️ <span>Armurerie</span>
+            </span>
+          </Link>
+
+          <Link
+            onClick={() => setOpen(false)}
+            to="/quest"
+            className="block hover:underline"
+          >
+            <span className="inline-flex items-center gap-1 justify-center w-full">
+              📜 <span>Quêtes</span>
+            </span>
+          </Link>
+
+          <Link
+            onClick={() => setOpen(false)}
+            to="/leaderboard"
+            className="block hover:underline"
+          >
+            <span className="inline-flex items-center gap-1 justify-center w-full">
+              🏆 <span>Leaderboard</span>
+            </span>
+          </Link>
+
+          <Link
+            onClick={() => setOpen(false)}
+            to="/stats"
+            className="block hover:underline"
+          >
+            <span className="inline-flex items-center gap-1 justify-center w-full">
+              📊 <span>Stats</span>
+            </span>
+          </Link>
         </nav>
       )}
     </header>

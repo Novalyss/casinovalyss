@@ -46,7 +46,7 @@ export default function ShopComponent() {
     <div className="rounded-lg bg-white shadow-md p-6 text-center">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {shop.map((item) => (
-        <div key={item.Id} className="flex flex-col items-center">
+        <div key={item.Id} className="flex flex-col items-center text-center">
           <ItemCard item={item} />
           <ActionButton
             onClick={async () => buyItem(item)}

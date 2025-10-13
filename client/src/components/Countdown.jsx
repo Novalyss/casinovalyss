@@ -111,8 +111,9 @@ export default function Countdown({ refreshTimer }) {
   }, [refreshTimer]);
 
   return (
-    <div className="text-center text-lg font-semibold">
-      🕒 Prochain refresh : <span className="font-mono">{timeLeftString}</span>
+    <div className="flex flex-wrap items-center justify-center text-center text-base sm:text-lg md:text-xl font-semibold gap-x-2 gap-y-1">
+      🕒 <span>Prochain refresh :</span>
+      <span className="font-mono text-blue-600">{timeLeftString}</span>
     </div>
   );
 }

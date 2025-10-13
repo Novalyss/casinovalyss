@@ -5,28 +5,36 @@ export default function TabComponent({ tabs }) {
 
   return (
     <div className="w-full">
-      {/* Onglets */}
-      <div className="flex flex-wrap justify-center gap-2 mb-4">
-        {tabs.map((tab, index) => (
-          <div
-            key={index}
-            onClick={() => setActiveTab(index)}
-            className={`px-3 py-2 sm:px-4 sm:py-2 rounded-t-lg flex items-center justify-center 
-                        transition cursor-pointer font-semibold text-sm sm:text-base 
-                        ${
+      {/* Container des onglets + contenu en colonne */}
+      <div className="flex flex-col">
+
+        {/* Headers des onglets : chaque onglet prend la même largeur */}
+        <div className="flex w-full border-b">
+          {tabs.map((tab, index) => (
+            <div
+              key={index}
+              onClick={() => setActiveTab(index)}
+              className={`flex-1 text-center px-3 py-2 transition rounded-t-lg
+                          ${
                           activeTab === index
                             ? "bg-blue-400 text-white"
                             : "bg-gray-300 text-gray-800 hover:bg-gray-400"
                         }`}
-          >
-            {tab.title}
-          </div>
-        ))}
-      </div>
+            >
+              {tab.title}
+            </div>
+          ))}
+        </div>
 
-      {/* Contenu actif */}
-      <div className="p-2 sm:p-4 md:p-6 bg-white rounded-b-lg shadow-inner">
-        {tabs[activeTab].content}
+        {/* Contenu : prend toute la largeur, n'agrandit pas le parent.
+            On limite la largeur max interne et on permet le scroll si nécessaire */}
+        <div className="w-full">
+          <div className="p-4 w-full max-w-full overflow-x-auto">
+            <div className="p-4 w-full max-w-full flex flex-col">
+              {tabs[activeTab].content}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

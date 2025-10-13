@@ -42,18 +42,23 @@ export default function SkillComponent({ classe, level, classesConfig }) {
   };
 
   return (
-    <div className="p-4 rounded-lg">
+    <div className="p-4 sm:p-4 rounded-lg max-w-full overflow-x-hidden">
       <TooltipProvider>
         <Tooltip>
-            <TooltipTrigger asChild>
-              <h2 className="text-xl font-bold mb-2">✨ Compétence spéciale</h2>
-            </TooltipTrigger>
-            <TooltipContent>
-              Compétence unique de la classe
-            </TooltipContent>
+          <TooltipTrigger asChild>
+            <h2 className="text-lg sm:text-xl font-bold mb-2 sm:text-left">
+              ✨ Compétence spéciale
+            </h2>
+          </TooltipTrigger>
+          <TooltipContent className="text-sm sm:text-base">
+            Compétence unique de la classe
+          </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-      <p>{getSkillDescription()}</p>
+
+      <p className="text-sm sm:text-base break-words whitespace-normal max-w-full overflow-x-hidden">
+        {getSkillDescription()}
+      </p>
     </div>
   );
 }
