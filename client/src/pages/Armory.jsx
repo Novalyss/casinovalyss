@@ -121,10 +121,13 @@ export default function Armory() {
   );
 
   return (
-    <div className="p-6 max-w-xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4 text-center">⚔️ Armurerie</h1>
-
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4 p-4 text-center">🛡️ Armurerie</h1>
+      <div className="mt-6 border-t pt-4"/>
       <div className="relative">
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
+          🔍
+        </span>
         <input
           type="text"
           placeholder="Rechercher un joueur..."
@@ -156,7 +159,7 @@ export default function Armory() {
             <div className="text-gray-500">Chargement...</div>
           ) : (
             <div className="flex flex-col md:flex-row gap-6">
-              <div className="min-w-[400px] rounded-lg">
+              <div className="w-full rounded-lg bg-white shadow-md p-6">
                 <CharacterComponent
                   playerName={selectedUser}
                   equipment={equipment}
@@ -166,15 +169,15 @@ export default function Armory() {
                 />
               </div>
         
-              <div className="min-w-[400px] rounded-lg shadow-md"> {/* remove fixed width ? */}
+              <div className="w-full rounded-lg bg-white shadow-md"> {/* remove fixed width ? */}
                 <TabComponent
                 tabs={[
                   {
-                    icon: <img src="../assets/icon/Stats.png" alt="Stats" className="w-6 h-6" />,
+                    title: <p>Statistiques</p>, // <img src="../assets/icon/Stats.png" alt="Stats" className="w-6 h-6" />
                     content: <StatsComponent equipment={equipment} equipmentConfig={equipmentConfig}/>,
                   },
                   {
-                    icon: <img src="../assets/icon/Id.svg" alt="Compétences" className="w-6 h-6" />,
+                    title: <p>Compétence</p>, // <img src="../assets/icon/Id.svg" alt="Compétences" className="w-6 h-6" />
                     content: <SkillComponent classe={classe} level={level} classesConfig={classesConfig} />,
                   },
                 ]}

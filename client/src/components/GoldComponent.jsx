@@ -14,6 +14,6 @@ export default function ShopComponent() {
     }
 
     return (
-        <p className="text-lg font-semibold">💰 Potatos: {gold}
+        <p className="text-lg font-semibold">💰 Mes potatos: {gold}
     </p>);
 }

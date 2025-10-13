@@ -200,7 +200,7 @@ app.get("/api/classesConfig", authenticateUser, async (req, res) => {
 
 app.post("/api/armory", authenticateUser, async (req, res) => {
 
-  if (req.body.user !== undefined) {
+  if (req.body?.user !== undefined) {
     // retrieve equip
     let equipment = getUserCache(req.body.user, "equipment");
      if (!equipment) {
@@ -228,7 +228,7 @@ app.post("/api/armory", authenticateUser, async (req, res) => {
 
     return res.json({ success: true, result: { equipment, classe, level} });
   }
-  return res.json({ success: false});
+  return res.status(400).end("Bad Request");
 });
 
 /* USER SPECIFIC */
@@ -331,23 +331,36 @@ app.put("/api/refresh", authenticateUser, async (req, res) => {
 });
 
 app.post("/api/buy", authenticateUser, async (req, res) => {
-  const result = await sendToWebSocket({"user": req.user, "action": "buy", itemId: req.body.itemId});
-  return res.json({ success: result.status, data: result.data });
+
+  if (req.body?.itemId !== undefined) {
+    const result = await sendToWebSocket({"user": req.user, "action": "buy", itemId: req.body.itemId});
+    return res.json({ success: result.status, data: result.data });
+  }
+  return res.status(400).end("Bad Request");
 });
 
 app.post("/api/delete", authenticateUser, async (req, res) => {
-  const result = await sendToWebSocket({"user": req.user, "action": "delete", itemId: req.body.itemId});
-  return res.json({ success: result.status, data: result.data });
+  if (req.body?.itemId !== undefined) {
+    const result = await sendToWebSocket({"user": req.user, "action": "delete", itemId: req.body.itemId});
+    return res.json({ success: result.status, data: result.data });
+  }
+  return res.status(400).end("Bad Request");
 });
 
 app.post("/api/equip", authenticateUser, async (req, res) => {
-  const result = await sendToWebSocket({"user": req.user, "action": "equip", itemId: req.body.itemId});
-  return res.json({ success: result.status, data: result.data });
+  if (req.body?.itemId !== undefined) {
+    const result = await sendToWebSocket({"user": req.user, "action": "equip", itemId: req.body.itemId});
+    return res.json({ success: result.status, data: result.data });
+  }
+  return res.status(400).end("Bad Request");
 });
 
 app.post("/api/unequip", authenticateUser, async (req, res) => {
-  const result = await sendToWebSocket({"user": req.user, "action": "unequip", itemSlot: req.body.slot});
-  return res.json({ success: result.status, data: result.data });
+  if (req.body?.slot !== undefined) {
+    const result = await sendToWebSocket({"user": req.user, "action": "unequip", itemSlot: req.body.slot});
+    return res.json({ success: result.status, data: result.data });
+  }
+  return res.status(400).end("Bad Request");
 });
 
 /* WebSocket */

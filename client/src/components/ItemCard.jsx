@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 const itemImages = {
   Helm: "../assets/stuff/Helm.png",
@@ -10,15 +11,6 @@ const itemImages = {
 };
 
 export default function ItemCard({ item }) {
-  const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0 });
-
-  const handleMouseMove = (e) => {
-    setTooltip({ visible: true, x: e.clientX, y: e.clientY });
-  };
-
-  const handleMouseLeave = () => {
-    setTooltip({ visible: false, x: 0, y: 0 });
-  };
 
   const thresholds = [
   { limit: 100, color: "border-gray-400" },
@@ -41,34 +33,31 @@ const borderClass = thresholds.find((t) => totalStats < t.limit)?.color || "bord
   return (
     <div
       key={item.Id}
-      className={`relative cursor-pointer p-1 border-4 rounded-lg shadow bg-white hover:shadow-lg transition flex flex-col items-center ${borderClass}`}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      className={`relative cursor-pointer border-4 rounded-lg shadow hover:shadow-lg transition flex flex-col items-center overflow-hidden ${borderClass}`}
     >
-
-      <img
-        src={itemImages[item.Type]}
-        alt={item.Type}
-        className="w-16 h-16 object-contain"
-      />
-
-      {tooltip.visible && (
-        <div
-          className="fixed min-w-[150px] bg-white text-black text-sm p-2 rounded-lg shadow-lg border border-gray-300 z-50 pointer-events-none"
-          style={{ top: tooltip.y + 15, left: tooltip.x + 15 }}
-        >
-          {/* Badge ilvl en haut à droite */}
-          <div className="absolute top-1 right-1 text-xs font-bold px-1 rounded">
-            ilvl {totalStats}
-          </div>
-          <p><strong>Type:</strong> {item.Type}</p>
-          <p><strong>Score de chance:</strong> {item.Chance}</p>
-          <p><strong>Score de Potatos Bonus:</strong> {item.FlatBonus}</p>
-          <p><strong>Score de Multiplicateur de Potatos:</strong> {item.MultBonus}</p>
-          <p><strong>Score de Réduction de Cooldown:</strong> {item.CooldownReduction}</p>
-          <p><strong>Score de Réduction de Coût:</strong> {item.CostReduction}</p>
-        </div>
-      )}
+      <TooltipProvider delayDuration={100}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="cursor-pointer rounded-lg shadow-md">
+              <img src={itemImages[item.Type]} alt={item.Type} className="w-10 h-10 sm:w-16 sm:h-16 object-cover" />
+            </span>
+          </TooltipTrigger>
+          <TooltipContent className={`text-sm border-4 ${borderClass}`} >
+            <div>
+              {/* Badge ilvl en haut à droite */}
+              <div className="absolute top-1 right-1 text-xs font-bold px-1 rounded">
+                ilvl {totalStats}
+              </div>
+              <p><strong>Type:</strong> {item.Type}</p>
+              <p><strong>Score de chance:</strong> {item.Chance}</p>
+              <p><strong>Score de Potatos Bonus:</strong> {item.FlatBonus}</p>
+              <p><strong>Score de Multiplicateur de Potatos:</strong> {item.MultBonus}</p>
+              <p><strong>Score de Réduction de Cooldown:</strong> {item.CooldownReduction}</p>
+              <p><strong>Score de Réduction de Coût:</strong> {item.CostReduction}</p>
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
   );
 }

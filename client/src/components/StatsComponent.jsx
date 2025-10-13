@@ -27,8 +27,15 @@ export default function StatsComponent({equipment, equipmentConfig}) {
 
   return (
     <div className="p-4 rounded-lg">
-      <h2 className="text-xl font-bold mb-4">📊 Statistiques</h2>
       <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <h2 className="text-xl font-bold mb-4">📊 Statistiques</h2>
+          </TooltipTrigger>
+          <TooltipContent>
+            Statistiques donné par l'équipement
+          </TooltipContent>
+        </Tooltip>
         <ul className="space-y-2">
           <li>
             <Tooltip>
@@ -38,7 +45,7 @@ export default function StatsComponent({equipment, equipmentConfig}) {
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Augmente les chances de gagner le gacha.</p>
+                <p>Augmente les chances de gagner le gacha</p>
               </TooltipContent>
             </Tooltip>
           </li>
@@ -51,7 +58,7 @@ export default function StatsComponent({equipment, equipmentConfig}) {
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Potatos ajouté aux gains de base d'un gagné gagné.</p>
+                <p>Potatos ajouté aux gains de base d'un gagné gagné</p>
               </TooltipContent>
             </Tooltip>
           </li>
@@ -60,11 +67,11 @@ export default function StatsComponent({equipment, equipmentConfig}) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <span className="cursor-pointer rounded-lg shadow-md">
-                  📈 Multiplicateur Bonus : +{(totals.MultBonus / equipmentConfig.Mult) * 100}%
+                  📈 Multiplicateur Bonus : +{((totals.MultBonus / equipmentConfig.Mult) * 100).toFixed(2)}%
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Multiplicateur final de potatos.</p>
+                <p>Multiplicateur final de potatos</p>
               </TooltipContent>
             </Tooltip>
           </li>
@@ -77,7 +84,7 @@ export default function StatsComponent({equipment, equipmentConfig}) {
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Réduit le temps minimum entre 2 lancés de gacha.</p>
+                <p>Réduit le temps minimum entre 2 lancés de gacha</p>
               </TooltipContent>
             </Tooltip>
           </li>
@@ -90,7 +97,7 @@ export default function StatsComponent({equipment, equipmentConfig}) {
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                <p>👉 Réduit le coût nécessaire pour lancer un gacha.</p>
+                <p>Réduit le coût nécessaire pour lancer un gacha</p>
               </TooltipContent>
             </Tooltip>
           </li>

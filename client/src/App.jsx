@@ -1,6 +1,6 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Shop from "./pages/Shop";
-import Inventory from "./pages/Inventory";
+import CharacterSheet from "./pages/CharacterSheet";
 import Armory from "./pages/Armory";
 import Quest from "./pages/Quest";
 import Leaderboard from "./pages/Leaderboard";
@@ -21,8 +21,9 @@ export default function App() {
               <Route path="/auth" element={<Auth />} />
               <Route element={<EventsProvider />}>
                 <Route element={<ProtectedRoute />}>
+                  <Route path="/" element={<Navigate to="/shop" replace />} />
                   <Route path="/shop" element={<Shop />} />
-                  <Route path="/inventory" element={<Inventory />} />
+                  <Route path="/character" element={<CharacterSheet />} />
                   <Route path="/armory" element={<Armory />} />
                   <Route path="/quest" element={<Quest />} />
                   <Route path="/leaderboard" element={<Leaderboard />} />

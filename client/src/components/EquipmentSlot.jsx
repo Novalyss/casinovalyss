@@ -32,31 +32,36 @@ export default function EquipmentSlot({ type, item, icon, readOnly }) {
 
   return (
     <div className="flex items-center justify-center" onClick={handleClick}>
-      {/* ITEM OR ICON */}
+      {/* ITEM OU ICÔNE */}
       {item ? (
         <ItemCard item={item} />
       ) : (
-        <img src={icon} alt={type} className="w-16 h-16" />
+        <img
+          src={icon}
+          alt={type}
+          className="w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 object-contain"
+        />
       )}
 
+      {/* MENU CONTEXTUEL */}
       {!readOnly && online === "on" && menu && (
         <div
           ref={menuRef}
           style={{ position: "fixed", top: menu.y, left: menu.x }}
-          className="z-50 p-2 rounded cursor-pointer bg-white shadow-md"
+          className="z-50 p-2 rounded-lg bg-white shadow-lg border border-gray-300 
+                    max-w-[90vw] sm:max-w-xs text-sm sm:text-base"
         >
           <div className="grid grid-rows-[auto_auto_1fr] gap-2">
             {/* Bouton Enlever */}
             {item && (
               <button
-                className="px-4 py-2 bg-gray-200 w-full text-left rounded text-center"
+                className="px-3 py-2 bg-gray-200 w-full text-center rounded hover:bg-gray-300 
+                          transition text-xs sm:text-sm font-medium"
                 onClick={async () => {
                   console.log("Unequip:", type);
                   await apiRequest("/unequip", "POST", { slot: type }, (data) => {
-                    if (data.success === "KO")
-                      addToast(JSON.parse(data.data), "error");
-                    else if (data.success === "PENDING")
-                      addToast(JSON.parse(data.data), "warning");
+                    if (data.success === "KO") addToast(JSON.parse(data.data), "error");
+                    else if (data.success === "PENDING") addToast(JSON.parse(data.data), "warning");
                   });
                   handleClose();
                 }}
@@ -66,18 +71,20 @@ export default function EquipmentSlot({ type, item, icon, readOnly }) {
             )}
 
             {/* Label */}
-            <div className="text-sm uppercase tracking-wide text-black border-b border-gray-400 pb-1 text-center">
+            <div className="text-xs sm:text-sm uppercase tracking-wide text-black 
+                            border-b border-gray-400 pb-1 text-center font-semibold">
               Objets équipables :
             </div>
 
             {/* Liste des items */}
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 max-h-[40vh] overflow-y-auto">
               {inventory
                 .filter((i) => i.Type === type)
                 .map((equip) => (
                   <div
                     key={equip.Id}
-                    className="flex items-center justify-center p-1 rounded cursor-pointer hover:bg-gray-100"
+                    className="flex items-center justify-center p-1 rounded cursor-pointer 
+                              hover:bg-gray-100 transition"
                     onClick={async () => {
                       console.log("Équiper:", equip);
                       await apiRequest("/equip", "POST", { itemId: equip.Id }, (data) => {

@@ -31,8 +31,9 @@ export default function Stats() {
       : (casinoStats.PotatoWon > 0 ? 100 : 0)
 
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6 text-center">📊 Statistiques</h1>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4 p-4 text-center">📊 Statistiques</h1>
+      <div className="mt-6 border-t pt-4"/>
 
       <div className="grid grid-cols-2 gap-4 bg-white shadow-md rounded-xl p-4">
         <Stat label="Défaites" value={casinoStats.LoseCount} />

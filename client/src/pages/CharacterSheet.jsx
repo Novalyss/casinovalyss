@@ -49,28 +49,33 @@ export default function Inventory() {
   return (
     <div className="p-6">
       <CasinoState />
-      <div className="flex flex-col md:flex-row gap-6">
-        <div className="min-w-[400px] rounded-lg">
-          <CharacterComponent playerName={ localStorage.getItem("userInfo") }/>
+      <h1 className="text-2xl font-bold mb-4 p-4 text-center">⚔️ Personnage</h1>
+      <div className="mt-6 border-t pt-4" />
+
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Bloc personnage */}
+        <div className="w-full rounded-lg bg-white shadow-md p-6">
+          <CharacterComponent playerName={localStorage.getItem("userInfo")} />
         </div>
 
-        <div className="min-w-[400px] rounded-lg shadow-md"> {/* remove fixed width ? */}
+        {/* Bloc onglets */}
+        <div className="w-full rounded-lg bg-white shadow-md">
           <TabComponent
-          tabs={[
-            {
-              icon: <img src="../assets/icon/Bag.svg" alt="Inventaire" className="w-6 h-6" />,
-              content: <InventoryComponent />,
-            },
-            {
-              icon: <img src="../assets/icon/Stats.png" alt="Stats" className="w-6 h-6" />,
-              content: <StatsComponent equipment={equipment} equipmentConfig={equipmentConfig}/>,
-            },
-            {
-              icon: <img src="../assets/icon/Id.svg" alt="Compétences" className="w-6 h-6" />,
-              content: <SkillComponent classe={classe} level={level} classesConfig={classesConfig} />,
-            },
-          ]}
-        />
+            tabs={[
+              {
+                title: <p>Inventaire</p>,
+                content: <InventoryComponent />,
+              },
+              {
+                title: <p>Statistiques</p>,
+                content: <StatsComponent equipment={equipment} equipmentConfig={equipmentConfig} />,
+              },
+              {
+                title: <p>Compétence</p>,
+                content: <SkillComponent classe={classe} level={level} classesConfig={classesConfig} />,
+              },
+            ]}
+          />
         </div>
       </div>
     </div>

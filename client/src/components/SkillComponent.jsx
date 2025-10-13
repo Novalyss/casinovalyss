@@ -1,3 +1,4 @@
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 export default function SkillComponent({ classe, level, classesConfig }) {
 
@@ -42,7 +43,16 @@ export default function SkillComponent({ classe, level, classesConfig }) {
 
   return (
     <div className="p-4 rounded-lg">
-      <h2 className="text-xl font-bold mb-2">✨ Compétence spéciale</h2>
+      <TooltipProvider>
+        <Tooltip>
+            <TooltipTrigger asChild>
+              <h2 className="text-xl font-bold mb-2">✨ Compétence spéciale</h2>
+            </TooltipTrigger>
+            <TooltipContent>
+              Compétence unique de la classe
+            </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       <p>{getSkillDescription()}</p>
     </div>
   );

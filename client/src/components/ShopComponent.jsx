@@ -43,7 +43,8 @@ export default function ShopComponent() {
     }
 
     return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="rounded-lg bg-white shadow-md p-6 text-center">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {shop.map((item) => (
         <div key={item.Id} className="flex flex-col items-center">
           <ItemCard item={item} />
@@ -60,6 +61,7 @@ export default function ShopComponent() {
           </ActionButton>
         </div>
       ))}
+      </div>
       <ActionButton
         onClick={async () => refreshShop()}
         disabled={online === "off"}

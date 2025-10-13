@@ -10,9 +10,12 @@ export default function Shop() {
   return (
     <div className="p-6">
       <CasinoState />
-      <h1 className="text-2xl font-bold mb-4">Boutique</h1>
-      <GoldComponent />
-      <Countdown refreshTimer={refreshTimer} />
+      <h1 className="text-2xl font-bold mb-4 p-4 text-center">🛍️ Boutique</h1>
+      <div className="mt-6 border-t pt-4"/>
+      <div className="flex justify-between items-center mb-6">
+        <GoldComponent />
+        <Countdown refreshTimer={refreshTimer} />
+      </div>
       <ShopComponent />
     </div>
   );

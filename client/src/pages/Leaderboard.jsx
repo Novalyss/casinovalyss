@@ -38,15 +38,15 @@ export default function Leaderboard() {
   };
 
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold text-center mb-6">🏆 Leaderboard</h1>
-
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4 p-4 text-center">🏆 Leaderboard</h1>
+      <div className="mt-6 border-t pt-4"/>
       <TooltipProvider>
-      <div className="space-y-3">
+      <div className="space-y-1">
         {top.map((player, idx) => (
           <div
             key={player.user}
-            className={`flex justify-between items-center p-3 rounded-lg border-2 shadow ${
+            className={`flex justify-between items-center p-1 rounded-lg border-2 shadow ${
               player.user === playerName
                 ? "bg-yellow-100 border-yellow-400 font-bold"
                 : "bg-white border-gray-300"
@@ -75,7 +75,7 @@ export default function Leaderboard() {
       {playerData && (
         <div className="mt-6 border-t pt-4">
           <div
-            className="flex justify-between items-center p-3 rounded-lg bg-yellow-50 border-2 border-yellow-400 font-bold shadow"
+            className="flex justify-between items-center p-1 rounded-lg bg-yellow-50 border-2 border-yellow-400 font-bold shadow"
           >
             <span>
               {playerIndex + 1}. {playerData.user}

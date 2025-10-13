@@ -6,31 +6,51 @@ export default function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="">
-      <div className="container mx-auto flex items-center justify-center">
-        {/* Logo */}
-        <Link to="/shop">
-          <img src="/assets/logo.png" alt="CasiNovalyss Logo" className="h-10 w-auto" />
-        </Link>
-
-        {/* Logo */}
-        <Link to="https://www.twitch.tv/novalyss" target="_blank" >
-          <img src="/assets/twitch-logo.png" alt="Twitch" className="h-10 w-auto" />
+    <header className="py-2 bg-white rounded-lg shadow">
+      <div className="container mx-auto flex items-center justify-between px-1">
+        {/* Logo gauche */}
+        <Link to="/shop" className="flex-shrink-0">
+          <img
+            src="/assets/logo.png"
+            alt="CasiNovalyss Logo"
+            className="max-h-12 w-auto"
+          />
         </Link>
 
         {/* Menu desktop */}
-        <nav className="hidden md:flex space-x-4">
-          <Link to="/shop" className="hover:underline">Shop</Link>
-          <Link to="/inventory" className="hover:underline">Inventaire</Link>
-          <Link to="/armory" className="hover:underline">Armurerie</Link>
-          <Link to="/quest" className="hover:underline">Quêtes</Link>
-          <Link to="/leaderboard" className="hover:underline">Leaderboard</Link>
-          <Link to="/stats" className="hover:underline">Stats</Link>
+        <nav className="hidden md:flex space-x-2 text-lg font-small">
+          <Link to="/shop" className="inline-flex items-center gap-1 hover:underline">
+            🛍️ <span>Boutique</span>
+          </Link>
+          <Link to="/character" className="inline-flex items-center gap-1 hover:underline">
+            ⚔️ <span>Personnage</span>
+          </Link>
+          <Link to="/armory" className="inline-flex items-center gap-1 hover:underline">
+            🛡️ <span>Armurerie</span>
+          </Link>
+          <Link to="/quest" className="inline-flex items-center gap-1 hover:underline">
+            📜 <span>Quêtes</span>
+          </Link>
+          <Link to="/leaderboard" className="inline-flex items-center gap-1 hover:underline">
+            🏆 <span>Leaderboard</span>
+          </Link>
+          <Link to="/stats" className="inline-flex items-center gap-1 hover:underline">
+            📊 <span>Stats</span>
+          </Link>
         </nav>
+
+        {/* Logo Twitch à droite */}
+        <Link to="https://www.twitch.tv/novalyss" target="_blank" className="flex-shrink-0">
+          <img
+            src="/assets/twitch-logo.png"
+            alt="Twitch"
+            className="max-h-12 w-auto"
+          />
+        </Link>
 
         {/* Menu mobile */}
         <button
-          className="md:hidden"
+          className="md:hidden ml-4"
           onClick={() => setOpen(!open)}
         >
           {open ? <X size={24} /> : <Menu size={24} />}
@@ -39,13 +59,13 @@ export default function Header() {
 
       {/* Dropdown mobile */}
       {open && (
-        <nav className="md:hidden p-4 space-y-2">
-          <Link onClick={() => setOpen(!open)} to="/" className="block hover:underline">Accueil</Link>
-          <Link onClick={() => setOpen(!open)} to="/shop" className="block hover:underline">Shop</Link>
-          <Link onClick={() => setOpen(!open)} to="/inventory" className="block hover:underline">Inventaire</Link>
-          <Link onClick={() => setOpen(!open)} to="/quest" className="block hover:underline">Quêtes</Link>
-          <Link onClick={() => setOpen(!open)} to="/leaderboard" className="block hover:underline">Leaderboard</Link>
-          <Link onClick={() => setOpen(!open)} to="/stats" className="block hover:underline">Stats</Link>
+        <nav className="md:hidden p-4 space-y-2 text-center bg-white shadow-inner">
+          <Link onClick={() => setOpen(false)} to="/shop" className="inline-flex block hover:underline">🛍️ <span>Boutique</span></Link>
+          <Link onClick={() => setOpen(false)} to="/character" className="inline-flex block hover:underline">⚔️ <span>Personnage</span></Link>
+          <Link onClick={() => setOpen(false)} to="/armory" className="inline-flex block hover:underline">🛡️ <span>Armurerie</span></Link>
+          <Link onClick={() => setOpen(false)} to="/quest" className="inline-flex block hover:underline">📜 <span>Quêtes</span></Link>
+          <Link onClick={() => setOpen(false)} to="/leaderboard" className="inline-flex block hover:underline">🏆 <span>Leaderboard</span></Link>
+          <Link onClick={() => setOpen(false)} to="/stats" className="inline-flex block hover:underline">📊 <span>Stats</span></Link>
         </nav>
       )}
     </header>
