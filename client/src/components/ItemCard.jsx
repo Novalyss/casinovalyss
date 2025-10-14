@@ -49,7 +49,7 @@ const borderClass = thresholds.find((t) => totalStats < t.limit)?.color || "bord
                 ilvl {totalStats}
               </div>
               <p><strong>Type:</strong> {item.Type}</p>
-              <p><strong>Score de chance:</strong> {item.Chance}</p>
+              <p><strong>Score de Chance:</strong> {item.Chance}</p>
               <p><strong>Score de Potatos Bonus:</strong> {item.FlatBonus}</p>
               <p><strong>Score de Multiplicateur de Potatos:</strong> {item.MultBonus}</p>
               <p><strong>Score de Réduction de Cooldown:</strong> {item.CooldownReduction}</p>

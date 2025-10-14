@@ -57,7 +57,14 @@ export default function EquipmentSlot({ type, item, icon, readOnly }) {
               <button
                 className="px-3 py-2 bg-gray-200 w-full text-center rounded hover:bg-gray-300 
                           transition text-xs sm:text-sm font-medium"
-                onClick={async () => { /* ... */ }}
+                onClick={async () => {
+                  console.log("Unequip:", type);
+                  await apiRequest("/unequip", "POST", { slot: type }, (data) => {
+                  if (data.success === "KO") addToast(JSON.parse(data.data), "error");
+                      else if (data.success === "PENDING") addToast(JSON.parse(data.data), "warning");
+                    });
+                    handleClose();
+                  }}
               >
                 Enlever
               </button>

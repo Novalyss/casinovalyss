@@ -25,12 +25,11 @@ const server = http.createServer(app);
 const router = express.Router();
 app.use(router)
 
-//const wss = new WebSocket.Server({ server });
 const wss = new WebSocket.Server({ noServer: true });
 const pendingRequests = new Map();
 const tokens = new Map();
 const clients = new Map();
-const messageQueue = [];
+//const messageQueue = [];
 let isConnected = false;
 let live = "off";
 
@@ -393,6 +392,7 @@ async function sendToWebSocket(request) {
       }
     }
   }
+  /*
   else if (live == "on") { // live is on but WS is disconnected
       console.log("queue request:" + request.action.toString());
       if (!messageQueue.includes(request)) {
@@ -402,6 +402,7 @@ async function sendToWebSocket(request) {
         return {status: "PENDING", data: "\"Action mise en attente.\""};
       }
   }
+  */
   return Promise.resolve({ status: "KO", data: "\"Le casino est fermé\"" });
 }
 
@@ -411,6 +412,7 @@ wss.on('connection', (ws) => {
   isConnected = true;
 
   // vider la queue
+  /*
   while (messageQueue.length > 0) {
     const {requestId, request} = messageQueue.shift();
     try {
@@ -419,6 +421,7 @@ wss.on('connection', (ws) => {
       reject(err);
     }
   }
+  */
 
   ws.on("message", (msg) => {
     const json = JSON.parse(msg);

@@ -112,7 +112,7 @@ export default function Countdown({ refreshTimer }) {
 
   return (
     <div className="flex flex-wrap items-center justify-center text-center text-base sm:text-lg md:text-xl font-semibold gap-x-2 gap-y-1">
-      🕒 <span>Prochain refresh :</span>
+      🕒 <span>Prochain refresh gratuit:</span>
       <span className="font-mono text-blue-600">{timeLeftString}</span>
     </div>
   );
