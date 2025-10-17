@@ -225,7 +225,14 @@ app.post("/api/armory", authenticateUser, async (req, res) => {
       level = JSON.stringify(level);
     }
 
-    return res.json({ success: true, result: { equipment, classe, level} });
+    // retrieve stats
+    let stats = getUserCache(req.body.user, "casinostats");
+    if (!stats) {
+      stats = await sendToWebSocket({"user": req.body.user, "action": "casinostats"});
+      stats = JSON.parse(stats.data);
+    }
+
+    return res.json({ success: true, result: { equipment, classe, level, stats} });
   }
   return res.status(400).end("Bad Request");
 });

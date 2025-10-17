@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import CharacterComponent from '../components/CharacterComponent';
+import CasinoStatsComponent from "../components/CasinoStatsComponent";
 import StatsComponent from '../components/StatsComponent';
 import SkillComponent from '../components/SkillComponent';
 import TabComponent from '../components/TabComponent';
@@ -18,6 +19,7 @@ export default function Armory() {
   const [equipment, setEquipment] = useState(null); // null => non chargé
   const [classe, setClasse] = useState(null);
   const [level, setLevel] = useState(null);
+  const [stats, setStats] = useState(null);
   const [loadingCharacter, setLoadingCharacter] = useState(false);
   const [equipmentConfig, setEquipmentConfig] = useState([]);
   const [classesConfig, setClassesConfig] = useState([]);
@@ -84,6 +86,7 @@ export default function Armory() {
           setEquipment(playerStuff ?? []);
           setClasse(res.result.classe ?? "Noob");
           setLevel(res.result.level ?? 1);
+          setStats(res.result.stats ?? []);
         } else {
           console.warn("Erreur ou pas de data pour", selectedUser, res);
           // fallback
@@ -91,6 +94,7 @@ export default function Armory() {
             setEquipment([]);
             setClasse("Noob");
             setLevel(1);
+            setStats([]);
           }
         }
       } catch (err) {
@@ -99,6 +103,7 @@ export default function Armory() {
           setEquipment([]);
           setClasse("Noob");
           setLevel(1);
+          setStats([]);
         }
       } finally {
         if (mounted) setLoadingCharacter(false);
@@ -158,31 +163,34 @@ export default function Armory() {
           {loadingCharacter ? (
             <div className="text-gray-500">Chargement...</div>
           ) : (
-            <div className="flex flex-col md:flex-row gap-6">
-              <div className="w-full rounded-lg bg-white shadow-md p-6">
-                <CharacterComponent
-                  playerName={selectedUser}
-                  equipment={equipment}
-                  classe={classe}
-                  level={level}
-                  readOnly={true}
+            <div className="p-6">
+              <div className="flex flex-col md:flex-row gap-6">
+                <div className="w-full rounded-lg bg-white shadow-md p-6">
+                  <CharacterComponent
+                    playerName={selectedUser}
+                    equipment={equipment}
+                    classe={classe}
+                    level={level}
+                    readOnly={true}
+                  />
+                </div>
+          
+                <div className="w-full rounded-lg bg-white shadow-md"> {/* remove fixed width ? */}
+                  <TabComponent
+                  tabs={[
+                    {
+                      title: <p>Statistiques</p>, // <img src="../assets/icon/Stats.png" alt="Stats" className="w-6 h-6" />
+                      content: <StatsComponent equipment={equipment} equipmentConfig={equipmentConfig}/>,
+                    },
+                    {
+                      title: <p>Compétence</p>, // <img src="../assets/icon/Id.svg" alt="Compétences" className="w-6 h-6" />
+                      content: <SkillComponent classe={classe} level={level} classesConfig={classesConfig} />,
+                    },
+                  ]}
                 />
+                </div>
               </div>
-        
-              <div className="w-full rounded-lg bg-white shadow-md"> {/* remove fixed width ? */}
-                <TabComponent
-                tabs={[
-                  {
-                    title: <p>Statistiques</p>, // <img src="../assets/icon/Stats.png" alt="Stats" className="w-6 h-6" />
-                    content: <StatsComponent equipment={equipment} equipmentConfig={equipmentConfig}/>,
-                  },
-                  {
-                    title: <p>Compétence</p>, // <img src="../assets/icon/Id.svg" alt="Compétences" className="w-6 h-6" />
-                    content: <SkillComponent classe={classe} level={level} classesConfig={classesConfig} />,
-                  },
-                ]}
-              />
-              </div>
+              <CasinoStatsComponent casinoStats={stats} />
             </div>
           )}
          
