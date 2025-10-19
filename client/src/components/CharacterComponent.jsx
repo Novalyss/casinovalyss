@@ -11,14 +11,14 @@ const typeIcons = {
 };
 
 const classImage = {
-  Leprechaun: "../assets/class/Leprechaun.png",
-  Pirate: "../assets/class/Pirate.png",
-  Voleur: "../assets/class/Voleur.png",
-  Magicien: "../assets/class/Magicien.png",
-  Enchanteur: "../assets/class/Enchanteur.png",
-  Ouvrier: "../assets/class/Ouvrier.png",
-  Pyromancien: "../assets/class/Pyromancien.png",
-  Brigand: "../assets/class/Brigand.png"
+  Leprechaun: "../assets/class/Leprechaun.webp",
+  Pirate: "../assets/class/Pirate.webp",
+  Voleur: "../assets/class/Voleur.webp",
+  Magicien: "../assets/class/Magicien.webp",
+  Enchanteur: "../assets/class/Enchanteur.webp",
+  Ouvrier: "../assets/class/Ouvrier.webp",
+  Pyromancien: "../assets/class/Pyromancien.webp",
+  Brigand: "../assets/class/Brigand.webp"
 }
 
 export default function CharacterComponent({

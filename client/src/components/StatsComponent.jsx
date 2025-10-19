@@ -93,7 +93,7 @@ export default function StatsComponent({equipment, equipmentConfig}) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <span className="text-sm sm:text-base cursor-pointer">
-                  💰 Réduction de coût : -{totals.CostReduction / 600 * equipmentConfig.CostR} potatos
+                  💰 Réduction de coût : -{Math.floor(totals.CostReduction / 600 * equipmentConfig.CostR)} potatos
                 </span>
               </TooltipTrigger>
               <TooltipContent>
