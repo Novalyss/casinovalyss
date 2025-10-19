@@ -1,20 +1,5 @@
 #root {
   max-width: 1280px;       /* limite la largeur sur grands écrans */
-  width: 90%;              /* prend 90% de l’écran sur petits écrans */
   margin: 0 auto;          /* centre horizontalement */
-  padding: 1rem;           /* padding de base pour mobiles */
   text-align: center;
-}
-
-/* Augmente le padding sur écrans moyens et grands */
-@media (min-width: 640px) {
-  #root {
-    padding: 2rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  #root {
-    padding: 3rem;
-  }
 }

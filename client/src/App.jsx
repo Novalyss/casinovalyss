@@ -1,3 +1,4 @@
+import "./App.css"
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Shop from "./pages/Shop";
 import CharacterSheet from "./pages/CharacterSheet";
@@ -14,7 +15,7 @@ import {EventsProvider} from "./components/EventsProvider";
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen w-full p-1 xl:p-5 gap-5">
           <Header />
           <main className="flex-grow">
             <Routes>

@@ -62,7 +62,7 @@ const renderPlayerQuests = (allQuests, playerProgress, type) =>
     });
 
   return (
-    <div className="p-6">
+    <div>
       <h1 className="text-2xl font-bold mb-4 p-4 text-center">📜 Quêtes</h1>
       <div className="mt-6 border-t pt-4"/>
       {/* Quêtes quotidiennes */}
