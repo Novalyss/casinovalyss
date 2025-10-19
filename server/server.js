@@ -7,7 +7,17 @@ const { setCache, getCache, clearCache, setUserCache, getUserCache, clearUserCac
 const path = require('path');
 const http = require("http");
 const url = require("url");
-require('dotenv').config();
+const { loadEnvData } = require("./utils/sampleLoader.js");
+const dotenv = require('dotenv');
+
+if (process.env.NODE_ENV === "example") {
+  console.log("🌿 Mode exemple activé — chargement de .env.example");
+  dotenv.config({ path: ".env.example" });
+} else {
+  dotenv.config();
+}
+
+loadEnvData();
 
 const app = express();
 
