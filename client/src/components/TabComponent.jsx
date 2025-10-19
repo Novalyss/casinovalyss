@@ -14,7 +14,7 @@ export default function TabComponent({ tabs }) {
             <div
               key={index}
               onClick={() => setActiveTab(index)}
-              className={`flex-1 text-center px-3 py-2 transition rounded-t-lg
+              className={`cursor-pointer select-none flex-1 text-center px-3 py-2 transition rounded-t-lg
                           ${
                           activeTab === index
                             ? "bg-blue-400 text-white"

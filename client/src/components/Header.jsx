@@ -19,24 +19,26 @@ export default function Header() {
 
         {/* Menu desktop */}
         <nav className="hidden md:flex space-x-2 text-lg font-small">
-          <Link to="/shop" className="inline-flex items-center gap-1 hover:underline">
-            🛍️ <span>Boutique</span>
-          </Link>
-          <Link to="/character" className="inline-flex items-center gap-1 hover:underline">
-            ⚔️ <span>Personnage</span>
-          </Link>
-          <Link to="/armory" className="inline-flex items-center gap-1 hover:underline">
-            🛡️ <span>Armurerie</span>
-          </Link>
-          <Link to="/quest" className="inline-flex items-center gap-1 hover:underline">
-            📜 <span>Quêtes</span>
-          </Link>
-          <Link to="/leaderboard" className="inline-flex items-center gap-1 hover:underline">
-            🏆 <span>Leaderboard</span>
-          </Link>
-          <Link to="/stats" className="inline-flex items-center gap-1 hover:underline">
-            📊 <span>Stats</span>
-          </Link>
+          <div className="flex flex-wrap gap-2">
+            <Link to="/shop" className="inline-flex items-center gap-1 hover:underline">
+              🛍️ <span>Boutique</span>
+            </Link>
+            <Link to="/character" className="inline-flex items-center gap-1 hover:underline">
+              ⚔️ <span>Personnage</span>
+            </Link>
+            <Link to="/armory" className="inline-flex items-center gap-1 hover:underline">
+              🛡️ <span>Armurerie</span>
+            </Link>
+            <Link to="/quest" className="inline-flex items-center gap-1 hover:underline">
+              📜 <span>Quêtes</span>
+            </Link>
+            <Link to="/leaderboard" className="inline-flex items-center gap-1 hover:underline">
+              🏆 <span>Leaderboard</span>
+            </Link>
+            <Link to="/stats" className="inline-flex items-center gap-1 hover:underline">
+              📊 <span>Stats</span>
+            </Link>
+          </div>
         </nav>
 
         {/* Logo Twitch à droite */}
