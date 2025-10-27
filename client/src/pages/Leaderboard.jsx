@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
 import { useEvents } from "../components/EventsProvider";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
@@ -46,27 +47,47 @@ export default function Leaderboard() {
         {top.map((player, idx) => (
           <div
             key={player.user}
-            className={`flex justify-between items-center p-1 rounded-lg border-2 shadow ${
+            className={`grid grid-cols-3 items-center p-1 rounded-lg border-2 shadow text-center ${
               player.user === playerName
                 ? "bg-yellow-100 border-yellow-400 font-bold"
                 : "bg-white border-gray-300"
             }`}
           >
-              <span className="flex items-center gap-2">
+              {/* Colonne 1 : rang + nom */}
+              <div className="flex items-center gap-2 justify-start">
                 {getMedal(idx) ? (
-                  <span className="text-xl">{getMedal(idx)} {player.user}</span>
+                  <span className="text-xl">
+                    {getMedal(idx)} {player.user}
+                  </span>
                 ) : (
-                  <span>{idx + 1}. {player.user}</span>
+                  <span>
+                    {idx + 1}. {player.user}
+                  </span>
                 )}
-              </span>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className="font-semibold">{player.score}</span>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Quêtes hebdo: {player.WeeklyQuests}, Quêtes quotidienne: {player.DailyQuests}, Mini Jeux:{player.MiniGames}</p>
-              </TooltipContent>
-            </Tooltip>
+              </div>
+
+              {/* Colonne 2 : 🛡️ Armurerie (centrée) */}
+              <div className="flex justify-center">
+                {player.user !== playerName && (
+                  <Link to={`/armory?user=${player.user}`}>
+                    <span className="cursor-pointer">
+                      🛡️ Armurerie
+                    </span>
+                  </Link>
+                )}
+              </div>
+            
+            {/* Colonne 3 : score + tooltip (aligné à droite) */}
+            <div className="flex justify-end">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="font-semibold">{player.score}🟢</span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Quêtes hebdo: {player.WeeklyQuests}, Quêtes quotidienne: {player.DailyQuests}, Mini Jeux:{player.MiniGames}</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
           </div>
         ))}
       </div>

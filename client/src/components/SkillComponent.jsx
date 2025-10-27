@@ -38,7 +38,7 @@ export default function SkillComponent({ classe, level, classesConfig }) {
   };
 
   return (
-    <div className="p-4 sm:p-4 rounded-lg max-w-full overflow-x-hidden">
+    <div className="p-4 sm:p-4 text-left rounded-lg max-w-full overflow-x-hidden">
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>

@@ -13,6 +13,7 @@ export default function Armory() {
   const [searchParams] = useSearchParams();
   const [knownPlayers, setKnownPlayers] = useState([]);
   const [isFocused, setIsFocused] = useState(false);
+  const [sortAsc, setSortAsc] = useState(true);
   const navigate = useNavigate();
 
   // states réactifs pour l'équipement / classe / level
@@ -57,7 +58,6 @@ export default function Armory() {
 
   // --> Requête quand selectedUser change
   useEffect(() => {
-    // si pas de joueur sélectionné, reset les valeurs (ou tu peux les laisser)
     if (!selectedUser) {
       setEquipment(null);
       setClasse(null);
@@ -72,7 +72,6 @@ export default function Armory() {
       try {
         const res = await apiRequest("/armory", "POST", { user: selectedUser });
 
-        // si ton apiRequest utilise callback-style, remplace par la version callback.
         if (res?.success && res.result) {
           if (!mounted) return;
 
@@ -121,9 +120,21 @@ export default function Armory() {
     setSearch(user);
   };
 
-  const filteredPlayers = knownPlayers.filter((p) =>
-    p.toLowerCase().includes(search.toLowerCase())
-  );
+  const handleToggleSort = (e) => {
+    e.preventDefault();
+    e.stopPropagation(); // Empêche le blur de se propager
+    setSortAsc((prev) => !prev);
+    setIsFocused(true); // Garde la dropdown ouverte
+  };
+
+  const filteredPlayers = knownPlayers
+    .slice()
+    .sort((a, b) =>
+      sortAsc
+        ? a.localeCompare(b, "fr", { sensitivity: "base" })
+        : b.localeCompare(a, "fr", { sensitivity: "base" })
+    )
+    .filter((p) => p.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div>
@@ -142,6 +153,16 @@ export default function Armory() {
           onBlur={() => setTimeout(() => setIsFocused(false), 150)}
           className="w-full p-2 border rounded text-center"
         />
+
+        {/* Bouton de tri */}
+        <div
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={handleToggleSort}
+          className="absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black transition"
+          title={`Trier ${sortAsc ? "Z → A" : "A → Z"}`}
+        >
+          {sortAsc ? "🔼" : "🔽"}
+        </div>
 
         {isFocused && filteredPlayers.length > 0 && (
           <div className="absolute z-10 mt-1 w-full bg-white border rounded shadow-lg max-h-60 overflow-y-auto">
