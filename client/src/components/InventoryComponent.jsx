@@ -52,8 +52,9 @@ export default function InventoryComponent() {
             position: "fixed",
             top: menu.y,
             left: menu.x,
+            zIndex: 9999,
           }}
-          className="z-50 p-2 rounded shadow-lg"
+          className="p-2 rounded shadow-lg bg-white border"
         >
         <button
           onClick={async () => {

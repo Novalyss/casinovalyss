@@ -9,6 +9,15 @@ const itemImages = {
   Weapon: "../assets/stuff/Weapon.png"
 };
 
+const typeTranslations = {
+  Helm: "Casque",
+  Chest: "Plastron",
+  Legs: "Jambières",
+  Boots: "Bottes",
+  Gloves: "Gants",
+  Weapon: "Arme",
+};
+
 export default function ItemCard({ item }) {
 
   const thresholds = [
@@ -42,17 +51,18 @@ const borderClass = thresholds.find((t) => totalStats < t.limit)?.color || "bord
             </span>
           </TooltipTrigger>
           <TooltipContent className={`text-sm border-4 ${borderClass}`} >
-            <div>
-              {/* Badge ilvl en haut à droite */}
-              <div className="absolute top-1 right-1 text-xs font-bold px-1 rounded">
-                ilvl {totalStats}
+            <div className="flex flex-col">
+              <div className="flex justify-between items-start">
+                <p><strong>Type:</strong> {typeTranslations[item.Type] || item.Type}</p>
+                <span className="text-xs font-bold px-0.5 py-0.5 rounded ml-auto self-start">
+                  ilvl {totalStats}
+                </span>
               </div>
-              <p><strong>Type:</strong> {item.Type}</p>
               <p><strong>Score de Chance:</strong> {item.Chance}</p>
               <p><strong>Score de Potatos Bonus:</strong> {item.FlatBonus}</p>
-              <p><strong>Score de Multiplicateur de Potatos:</strong> {item.MultBonus}</p>
-              <p><strong>Score de Réduction de Cooldown:</strong> {item.CooldownReduction}</p>
-              <p><strong>Score de Réduction de Coût:</strong> {item.CostReduction}</p>
+              <p><strong>Score de Multiplicateur:</strong> {item.MultBonus}</p>
+              <p><strong>Score de Cooldown:</strong> {item.CooldownReduction}</p>
+              <p><strong>Score de Réduction Coût:</strong> {item.CostReduction}</p>
             </div>
           </TooltipContent>
         </Tooltip>

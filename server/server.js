@@ -41,7 +41,6 @@ const tokens = new Map();
 const clients = new Map();
 //const messageQueue = [];
 let isConnected = false;
-let live = "off";
 
 server.on("upgrade", (req, socket, head) => {
 
@@ -91,7 +90,7 @@ app.get("/api/events", (req, res) => {
     res.flushHeaders();
 
     res.write(`event: live\n`);
-    res.write(`data: ${JSON.stringify(live)}\n\n`);
+    res.write(`data: ${JSON.stringify(isConnected == true ? "on" : "off")}\n\n`);
 
     res.write(`event: refreshShopTimer\n`);
     res.write(`data: ${JSON.stringify(getCache("refreshShopTimer"))}\n\n`);
@@ -438,6 +437,7 @@ wss.on('connection', (ws) => {
   console.log("✅ Connecté à StreamerBot");
   
   isConnected = true;
+  sendToAllUsers("live", "on");
 
   // vider la queue
   /*
@@ -461,12 +461,6 @@ wss.on('connection', (ws) => {
     if (action == "reset") {
       clearCache();
       clearUserCache();
-      return;
-    }
-
-    if (action == "live") {
-      live = data;
-      sendToAllUsers(action, data);
       return;
     }
 
@@ -517,6 +511,7 @@ wss.on('connection', (ws) => {
 
   ws.on('close', () => {
     isConnected = false;
+    sendToAllUsers("live", "off");
     console.log('StreamerBot disconnected');
   });
 });
