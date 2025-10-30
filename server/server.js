@@ -11,7 +11,7 @@ const { loadEnvData } = require("./utils/sampleLoader.js");
 const dotenv = require('dotenv');
 
 if (process.env.NODE_ENV === "example") {
-  console.log("🌿 Mode exemple activé — chargement de .env.example");
+  console.log("Mode exemple activé — chargement de .env.example");
   dotenv.config({ path: ".env.example" });
 } else {
   dotenv.config();
@@ -91,6 +91,10 @@ app.get("/api/events", (req, res) => {
 
     res.write(`event: live\n`);
     res.write(`data: ${JSON.stringify(isConnected == true ? "on" : "off")}\n\n`);
+
+    // Send All user data at connection ?
+    res.write(`event: equipment\n`);
+    res.write(`data: ${JSON.stringify(getUserCache(user, "equipment"))}\n\n`);
 
     res.write(`event: refreshShopTimer\n`);
     res.write(`data: ${JSON.stringify(getCache("refreshShopTimer"))}\n\n`);
