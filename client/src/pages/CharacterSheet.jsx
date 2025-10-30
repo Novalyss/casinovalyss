@@ -5,6 +5,7 @@ import StatsComponent from '../components/StatsComponent';
 import SkillComponent from '../components/SkillComponent';
 import TabComponent from '../components/TabComponent';
 import CasinoState from '../components/CasinoState';
+import ChangeClassComponent from "../components/ChangeClassComponent";
 import { useEvents } from "../components/EventsProvider";
 import { apiRequest } from "../lib/api";
 
@@ -54,8 +55,11 @@ export default function Inventory() {
 
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Bloc personnage */}
-        <div className="w-full rounded-lg bg-white shadow-md p-6">
-          <CharacterComponent playerName={localStorage.getItem("userInfo")} />
+        <div className="w-full">
+          <div className="w-full rounded-lg bg-white shadow-md p-6">
+            <CharacterComponent playerName={localStorage.getItem("userInfo")} />
+          </div>
+          <ChangeClassComponent classe={classe}/>
         </div>
 
         {/* Bloc onglets */}

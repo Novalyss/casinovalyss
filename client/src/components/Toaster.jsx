@@ -9,7 +9,7 @@ export function useToast() {
 export default function Toaster({ children }) {
   const [toasts, setToasts] = useState([]);
 
-  const addToast = (message, type = "error", duration = 3000) => {
+  const addToast = (message, type = "error", duration = 5000) => {
     const id = Date.now();
     setToasts((prev) => [...prev, { id, message, type, visible: true }]);
 
@@ -37,7 +37,8 @@ export default function Toaster({ children }) {
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className={`w-[400px] h-[100px] flex items-center justify-center rounded shadow-lg text-white transform transition-all duration-300
+            className={`w-full sm:w-[400px] md:w-[500px] lg:w-[600px]
+  h-[150px] sm:h-[180px] md:h-[200px] p-4  flex items-center justify-center rounded shadow-lg text-white transform transition-all duration-300
               ${
                 toast.visible
                   ? "translate-y-0 opacity-100"

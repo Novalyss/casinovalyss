@@ -317,6 +317,17 @@ app.get("/api/class", authenticateUser, async (req, res) => {
   return res.json({ success: false });
 });
 
+app.post("/api/changeClass", authenticateUser, async (req, res) => {
+
+  if (req.body?.class === undefined) {
+    return res.status(400).end("Bad Request");
+  }
+  
+  const result = await sendToWebSocket({"user": req.user, "action": "changeClass", "classe": req.body.class});
+
+  res.json({ success: result.status, data: result.data });
+});
+
 app.get("/api/level", authenticateUser, async (req, res) => {
   const cached = getUserCache(req.user, "level");
   

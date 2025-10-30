@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useEvents } from "../components/EventsProvider";
+import { useEvents } from "./EventsProvider";
 import { apiRequest } from "../lib/api";
 
 export default function ShopComponent() {

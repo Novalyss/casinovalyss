@@ -45,6 +45,7 @@ export default function CasinoStats({ casinoStats: casinoStatsProp, }) {
             </div>
 
             <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-4 text-center">
+                <p className="text-lg font-semibold">🔢 Nombre de parties jouées : {totalGames}</p>
                 <p className="text-lg font-semibold">🎯 Win Rate : {winRate}%</p>
                 <p className="text-lg font-semibold">💹 Rendement : {rendement}%</p>
             </div>

@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { useEvents } from "../components/EventsProvider";
+import { useEvents } from "./EventsProvider";
 import { apiRequest } from "../lib/api";
-import { useToast } from "../components/Toaster";
-import ItemCard from "../components/ItemCard";
-import ActionButton from "../components/ActionButton";
+import { useToast } from "./Toaster";
+import ItemCard from "./ItemCard";
+import ActionButton from "./ActionButton";
 
 
 export default function ShopComponent() {
