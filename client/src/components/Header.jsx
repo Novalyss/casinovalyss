@@ -20,11 +20,11 @@ export default function Header() {
         {/* Menu desktop */}
         <nav className="hidden md:flex space-x-2 text-lg font-small">
           <div className="flex flex-wrap gap-2">
-            <Link to="/shop" className="inline-flex items-center gap-1 hover:underline">
-              🛍️ <span>Boutique</span>
-            </Link>
             <Link to="/character" className="inline-flex items-center gap-1 hover:underline">
               ⚔️ <span>Personnage</span>
+            </Link>
+            <Link to="/shop" className="inline-flex items-center gap-1 hover:underline">
+              🛍️ <span>Boutique</span>
             </Link>
             <Link to="/armory" className="inline-flex items-center gap-1 hover:underline">
               🛡️ <span>Armurerie</span>
@@ -64,21 +64,21 @@ export default function Header() {
         <nav className="md:hidden p-4 space-y-2 text-center bg-white shadow-inner">
           <Link
             onClick={() => setOpen(false)}
-            to="/shop"
-            className="block hover:underline"
-          >
-            <span className="inline-flex items-center gap-1 justify-center w-full">
-              🛍️ <span>Boutique</span>
-            </span>
-          </Link>
-
-          <Link
-            onClick={() => setOpen(false)}
             to="/character"
             className="block hover:underline"
           >
             <span className="inline-flex items-center gap-1 justify-center w-full">
               ⚔️ <span>Personnage</span>
+            </span>
+          </Link>
+          
+          <Link
+            onClick={() => setOpen(false)}
+            to="/shop"
+            className="block hover:underline"
+          >
+            <span className="inline-flex items-center gap-1 justify-center w-full">
+              🛍️ <span>Boutique</span>
             </span>
           </Link>
 

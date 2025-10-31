@@ -22,9 +22,9 @@ export default function App() {
               <Route path="/auth" element={<Auth />} />
               <Route element={<EventsProvider />}>
                 <Route element={<ProtectedRoute />}>
-                  <Route path="/" element={<Navigate to="/shop" replace />} />
-                  <Route path="/shop" element={<Shop />} />
+                  <Route path="/" element={<Navigate to="/character" replace />} />
                   <Route path="/character" element={<CharacterSheet />} />
+                  <Route path="/shop" element={<Shop />} />
                   <Route path="/armory" element={<Armory />} />
                   <Route path="/quest" element={<Quest />} />
                   <Route path="/leaderboard" element={<Leaderboard />} />
