@@ -52,10 +52,8 @@ function clearCache() {
 
 function getLeaderBoardData() {
   return Object.entries(userCache).map(([user, data]) => {
-    const { MiniGames = 0, DailyQuests = 0, WeeklyQuests = 0 } =
-      data?.leaderboard?.data || {};
-
-    return { user, MiniGames, DailyQuests, WeeklyQuests };
+    const equipment = data?.equipment?.data || {};
+    return { user, equipment };
   });
 }
 

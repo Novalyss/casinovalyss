@@ -463,7 +463,6 @@ wss.on('connection', (ws) => {
     
     /* specific actions */
     if (action == "reset") {
-      clearCache();
       clearUserCache();
       return;
     }

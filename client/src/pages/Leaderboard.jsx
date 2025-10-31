@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useEvents } from "../components/EventsProvider";
+import { deserializeItem } from "../lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 export default function Leaderboard() {
@@ -8,14 +9,34 @@ export default function Leaderboard() {
   const playerName = localStorage.getItem("userInfo");
 
   const leaderboard = useMemo(() => {
-    console.log("update");
-    return leaderboardData
-      .map(({ user, MiniGames = 0, DailyQuests = 0, WeeklyQuests = 0 }) => {
-        const score = WeeklyQuests * 10 + DailyQuests * 5 + MiniGames;
-        return { user, score, MiniGames, DailyQuests, WeeklyQuests };
-      })
-      .sort((a, b) => b.score - a.score);
-  }, [leaderboardData]);
+
+  return leaderboardData
+    .map(({ user, equipment = [] }) => {
+
+      if (user == "Novalyss") {
+        return { user, totalStats: 0 };
+      }
+
+      // Désérialiser chaque item du joueur
+      const items = equipment.map(deserializeItem);
+
+      // Calculer la somme totale des stats de tous ses items
+      const totalStats = items.reduce(
+        (acc, item) =>
+          acc +
+          (item.Chance || 0) +
+          (item.FlatBonus || 0) +
+          (item.MultBonus || 0) +
+          (item.CooldownReduction || 0) +
+          (item.CostReduction || 0),
+        0
+      );
+
+      return { user, totalStats };
+    })
+    // Trier les joueurs par total de stats décroissant
+    .sort((a, b) => b.totalStats - a.totalStats);
+}, [leaderboardData]);
 
   if (leaderboard.length === 0) {
     return <p className="text-center text-gray-500">Chargement du classement...</p>;
@@ -42,7 +63,6 @@ export default function Leaderboard() {
     <div>
       <h1 className="text-2xl font-bold mb-4 p-4 text-center">🏆 Leaderboard</h1>
       <div className="mt-6 border-t pt-4"/>
-      <TooltipProvider>
       <div className="space-y-1">
         {top.map((player, idx) => (
           <div
@@ -79,14 +99,7 @@ export default function Leaderboard() {
             
             {/* Colonne 3 : score + tooltip (aligné à droite) */}
             <div className="flex justify-end">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span className="font-semibold">{player.score}🟢</span>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Quêtes hebdo: {player.WeeklyQuests}, Quêtes quotidienne: {player.DailyQuests}, Mini Jeux:{player.MiniGames}</p>
-                </TooltipContent>
-              </Tooltip>
+              <span className="font-semibold">{player.totalStats} iLvl</span>
             </div>
           </div>
         ))}
@@ -101,18 +114,12 @@ export default function Leaderboard() {
             <span>
               {playerIndex + 1}. {playerData.user}
             </span>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className="font-semibold">{playerData.score}</span>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Quêtes hebdo: {playerData.WeeklyQuests}, Quêtes quotidienne: {playerData.DailyQuests}, Mini Jeux:{playerData.MiniGames}</p>
-              </TooltipContent>
-            </Tooltip>
+            <div className="flex justify-end">
+              <span className="font-semibold">{player.totalStats} iLvl</span>
+            </div>
           </div>
         </div>
       )}
-    </TooltipProvider>
     </div>
   );
 }
