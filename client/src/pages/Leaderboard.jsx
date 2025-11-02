@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useEvents } from "../components/EventsProvider";
 import { deserializeItem } from "../lib/utils";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 export default function Leaderboard() {
   const { leaderboardData } = useEvents();
@@ -10,32 +9,29 @@ export default function Leaderboard() {
 
   const leaderboard = useMemo(() => {
 
-  return leaderboardData
-    .map(({ user, equipment = [] }) => {
+    return leaderboardData
+      .filter(({ user }) => user !== "Novalyss")
+      .map(({ user, equipment = [] }) => {
 
-      if (user == "Novalyss") {
-        return { user, totalStats: 0 };
-      }
+        // Désérialiser chaque item du joueur
+        const items = equipment.map(deserializeItem);
 
-      // Désérialiser chaque item du joueur
-      const items = equipment.map(deserializeItem);
+        // Calculer la somme totale des stats de tous ses items
+        const totalStats = items.reduce(
+          (acc, item) =>
+            acc +
+            (item.Chance || 0) +
+            (item.FlatBonus || 0) +
+            (item.MultBonus || 0) +
+            (item.CooldownReduction || 0) +
+            (item.CostReduction || 0),
+          0
+        );
 
-      // Calculer la somme totale des stats de tous ses items
-      const totalStats = items.reduce(
-        (acc, item) =>
-          acc +
-          (item.Chance || 0) +
-          (item.FlatBonus || 0) +
-          (item.MultBonus || 0) +
-          (item.CooldownReduction || 0) +
-          (item.CostReduction || 0),
-        0
-      );
-
-      return { user, totalStats };
-    })
-    // Trier les joueurs par total de stats décroissant
-    .sort((a, b) => b.totalStats - a.totalStats);
+        return { user, totalStats };
+      })
+      // Trier les joueurs par total de stats décroissant
+      .sort((a, b) => b.totalStats - a.totalStats);
 }, [leaderboardData]);
 
   if (leaderboard.length === 0) {

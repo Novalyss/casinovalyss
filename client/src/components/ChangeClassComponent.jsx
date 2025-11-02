@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { apiRequest } from "../lib/api";
 import { useToast } from "./Toaster";
+import ActionButton from "./ActionButton";
 
 const classesList = [
   "Brigand",
@@ -29,19 +30,25 @@ export default function ChangeClassComponent({ classe }) {
   const [selectedClass, setSelectedClass] = useState(classe || "");
 
   useEffect(() => {
-    if (classe) setSelectedClass(classe);
+    if (classe) {
+      setSelectedClass(classe);
+
+    }
   }, [classe]);
 
   const handleSubmit = async () => {
-        apiRequest("/changeClass", "POST", { class: selectedClass }, (data) => {
-            console.log("Callback change class:", data);
-            if (data.success == "KO") {
-                addToast(JSON.parse(data.data), "error");
-            } else if (data.success == "PENDING") {
-                addToast(JSON.parse(data.data), "warning");
-            }
-        });
-    }
+      if (selectedClass == classe) {
+        return;
+      }
+      apiRequest("/changeClass", "POST", { class: selectedClass }, (data) => {
+          console.log("Callback change class:", data);
+          if (data.success == "KO") {
+              addToast(JSON.parse(data.data), "error");
+          } else if (data.success == "PENDING") {
+              addToast(JSON.parse(data.data), "warning");
+          }
+      });
+  }
 
   return (
     <div className="p-4 m-2 bg-white rounded-xl shadow-md border max-w-2xl mx-auto">
@@ -52,7 +59,7 @@ export default function ChangeClassComponent({ classe }) {
         <select
           value={selectedClass}
           onChange={(e) => setSelectedClass(e.target.value)}
-          className="border rounded-lg p-2 w-full"
+          className="border rounded-lg p-2 w-full text-center"
         >
           {classesList.map((classeAvailable) => (
             <option key={classeAvailable} value={classeAvailable}>
@@ -61,12 +68,12 @@ export default function ChangeClassComponent({ classe }) {
           ))}
         </select>
 
-        <button
+        <ActionButton
           onClick={handleSubmit}
           className="px-4 py-2 rounded-lg text-white transition bg-blue-600 hover:bg-blue-700 w-full sm:w-auto"
         >
           Valider
-        </button>
+        </ActionButton>
 
         {/* Ligne 2 */}
         <h2 className="text-lg font-semibold sm:col-span-1 mt-2 sm:mt-0">

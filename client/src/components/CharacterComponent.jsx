@@ -23,6 +23,7 @@ const classImage = {
 
 export default function CharacterComponent({
   playerName,
+  currentTitle,
   readOnly = false,
   equipment: equipmentProp,
   classe: classeProp,
@@ -48,7 +49,7 @@ export default function CharacterComponent({
         <img
           src={classImage[classe]}
           alt=""
-          className="absolute inset-0 w-full h-full object-contain opacity-60 pointer-events-none"
+          className="absolute inset-0 w-full h-full object-contain opacity-60 pointer-events-none p-4"
         />
       )}
 
@@ -56,10 +57,15 @@ export default function CharacterComponent({
       <div className="row-start-1 row-end-2 col-start-2 col-end-4 flex items-start">
         <div
           className="w-full bg-gradient-to-b from-yellow-200 to-yellow-400 
-                    border-2 sm:border-4 border-black rounded-xl px-2 py-1 sm:py-2 
+                    border-2 sm:border-4 border-black rounded-xl px-1 py-1
                     shadow-md sm:shadow-lg text-black font-bold tracking-wide text-center text-xs sm:text-base"
         >
-          {playerName}
+          <div className="w-full">
+            {playerName}
+          </div>
+          <div className="w-full">
+            {currentTitle}
+          </div>
         </div>
       </div>
 

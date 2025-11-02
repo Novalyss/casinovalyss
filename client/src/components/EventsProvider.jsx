@@ -13,6 +13,8 @@ export function EventsProvider() {
   const [equipment, setEquipment] = useState(null);
   const [classe, setClasse] = useState(null);
   const [level, setLevel] = useState(null);
+  const [currentTitle, setCurrentTitle] = useState(null);
+  const [titles, setTitles] = useState([]);
   const [questProgress, setQuestProgress] = useState({});
   const [casinoStats, setCasinoStats] = useState({});
   const [online, setOnline] = useState("off");
@@ -49,6 +51,18 @@ export function EventsProvider() {
     eventSource.addEventListener("level", (e) => {
       console.log("Niveau du joueur mise à jour:", e.data);
       setLevel(e.data);
+    });
+
+    eventSource.addEventListener("currentTitle", (e) => {
+      const data = JSON.parse(e.data);
+      console.log("Titre sélectionné du joueur mise à jour:", data);
+      setCurrentTitle(data);
+    });
+
+    eventSource.addEventListener("titles", (e) => {
+      const data = JSON.parse(e.data);
+      console.log("Liste des titres du joueur mise à jour:", data);
+      setTitles(data);
     });
 
     eventSource.addEventListener("progress", (e) => {
@@ -137,7 +151,7 @@ export function EventsProvider() {
   }, []);
 
   return (
-    <EventsContext.Provider value={{ gold, shop, inventory, equipment, classe, level, questProgress, casinoStats, online, leaderboardData, refreshTimer }}>
+    <EventsContext.Provider value={{ gold, shop, inventory, equipment, classe, level, currentTitle, titles, questProgress, casinoStats, online, leaderboardData, refreshTimer }}>
       {<Outlet />}
     </EventsContext.Provider>
   );

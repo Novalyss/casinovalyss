@@ -3,6 +3,7 @@ import CharacterComponent from '../components/CharacterComponent';
 import InventoryComponent from '../components/InventoryComponent';
 import StatsComponent from '../components/StatsComponent';
 import SkillComponent from '../components/SkillComponent';
+import TitleComponent from '../components/TitleComponent';
 import TabComponent from '../components/TabComponent';
 import CasinoState from '../components/CasinoState';
 import ChangeClassComponent from "../components/ChangeClassComponent";
@@ -13,7 +14,7 @@ import { apiRequest } from "../lib/api";
 export default function Inventory() {
   const [equipmentConfig, setEquipmentConfig] = useState([]);
   const [classesConfig, setClassesConfig] = useState([]);
-  const { classe, level, equipment } = useEvents();
+  const { classe, level, equipment, currentTitle, titles } = useEvents();
 
   useEffect(() => {
     apiRequest("/inventory");
@@ -29,6 +30,14 @@ export default function Inventory() {
 
   useEffect(() => {
     apiRequest("/equipment");
+  }, []);
+  
+   useEffect(() => {
+    apiRequest("/currentTitle");
+  }, []);
+
+   useEffect(() => {
+    apiRequest("/titles");
   }, []);
 
   useEffect(() => {
@@ -55,11 +64,8 @@ export default function Inventory() {
 
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Bloc personnage */}
-        <div className="w-full">
-          <div className="w-full rounded-lg bg-white shadow-md p-6">
-            <CharacterComponent playerName={localStorage.getItem("userInfo")} />
-          </div>
-          <ChangeClassComponent classe={classe}/>
+        <div className="w-full rounded-lg bg-white shadow-md p-6">
+          <CharacterComponent playerName={localStorage.getItem("userInfo")} currentTitle={currentTitle} />
         </div>
 
         {/* Bloc onglets */}
@@ -80,6 +86,14 @@ export default function Inventory() {
               },
             ]}
           />
+        </div>
+      </div>
+      <div className="flex flex-col lg:flex-row gap-6">
+         <div className="w-full">
+          <ChangeClassComponent classe={classe}/>
+        </div>
+        <div className="w-full">
+          <TitleComponent titles={titles} currentTitle={currentTitle} />
         </div>
       </div>
     </div>

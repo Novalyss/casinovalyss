@@ -21,6 +21,7 @@ export default function Armory() {
   const [classe, setClasse] = useState(null);
   const [level, setLevel] = useState(null);
   const [stats, setStats] = useState(null);
+  const [currentTitle, setCurrentTitle] = useState(null);
   const [loadingCharacter, setLoadingCharacter] = useState(false);
   const [equipmentConfig, setEquipmentConfig] = useState([]);
   const [classesConfig, setClassesConfig] = useState([]);
@@ -86,6 +87,7 @@ export default function Armory() {
           setClasse(res.result.classe ?? "Noob");
           setLevel(res.result.level ?? 1);
           setStats(res.result.stats ?? []);
+          setCurrentTitle(res.result.currentTitle ?? "")
         } else {
           console.warn("Erreur ou pas de data pour", selectedUser, res);
           // fallback
@@ -94,6 +96,7 @@ export default function Armory() {
             setClasse("Noob");
             setLevel(1);
             setStats([]);
+            setCurrentTitle("")
           }
         }
       } catch (err) {
@@ -103,6 +106,7 @@ export default function Armory() {
           setClasse("Noob");
           setLevel(1);
           setStats([]);
+          setCurrentTitle("")
         }
       } finally {
         if (mounted) setLoadingCharacter(false);
@@ -189,6 +193,7 @@ export default function Armory() {
                 <div className="w-full rounded-lg bg-white shadow-md p-6">
                   <CharacterComponent
                     playerName={selectedUser}
+                    currentTitle={currentTitle}
                     equipment={equipment}
                     classe={classe}
                     level={level}

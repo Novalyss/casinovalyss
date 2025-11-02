@@ -245,7 +245,14 @@ app.post("/api/armory", authenticateUser, async (req, res) => {
       stats = JSON.parse(stats.data);
     }
 
-    return res.json({ success: true, result: { equipment, classe, level, stats} });
+    // retrieve title
+    let currentTitle = getUserCache(req.body.user, "currentTitle");
+    if (!currentTitle) {
+      currentTitle = await sendToWebSocket({"user": req.body.user, "action": "currentTitle"});
+      currentTitle = JSON.parse(currentTitle.data);
+    }
+
+    return res.json({ success: true, result: { equipment, classe, level, stats, currentTitle} });
   }
   return res.status(400).end("Bad Request");
 });
@@ -318,6 +325,39 @@ app.get("/api/class", authenticateUser, async (req, res) => {
   }
   sendToWebSocket({"user": req.user, "action": "class"});
   return res.json({ success: false });
+});
+
+app.get("/api/currentTitle", authenticateUser, async (req, res) => {
+  const cached = getUserCache(req.user, "currentTitle");
+  
+  if (cached) {
+    sendToUser(req.user, "currentTitle", cached);
+    return res.json({ success: true, result: cached });
+  }
+  sendToWebSocket({"user": req.user, "action": "currentTitle"});
+  return res.json({ success: false });
+});
+
+app.get("/api/titles", authenticateUser, async (req, res) => {
+  const cached = getUserCache(req.user, "titles");
+  
+  if (cached) {
+    sendToUser(req.user, "titles", cached);
+    return res.json({ success: true, result: cached });
+  }
+  sendToWebSocket({"user": req.user, "action": "titles"});
+  return res.json({ success: false });
+});
+
+app.post("/api/changeTitle", authenticateUser, async (req, res) => {
+
+  if (req.body?.title === undefined) {
+    return res.status(400).end("Bad Request");
+  }
+  
+  const result = await sendToWebSocket({"user": req.user, "action": "changeTitle", "title": req.body.title});
+
+  res.json({ success: result.status, data: result.data });
 });
 
 app.post("/api/changeClass", authenticateUser, async (req, res) => {
