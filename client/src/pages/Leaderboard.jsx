@@ -10,7 +10,7 @@ export default function Leaderboard() {
   const leaderboard = useMemo(() => {
 
     return leaderboardData
-      //.filter(({ user }) => user !== "Novalyss")
+      .filter(({ user }) => user !== "Novalyss")
       .map(({ user, equipment = [] }) => {
 
         const safeEquipment = Array.isArray(equipment) ? equipment : [];

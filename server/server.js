@@ -247,12 +247,16 @@ app.post("/api/armory", authenticateUser, async (req, res) => {
 
     // retrieve title
     let currentTitle = getUserCache(req.body.user, "currentTitle");
-    if (!currentTitle) {
+    if (currentTitle === null) {
       currentTitle = await sendToWebSocket({"user": req.body.user, "action": "currentTitle"});
-      currentTitle = JSON.parse(currentTitle.data);
+      if (currentTitle.status == "OK") {
+        currentTitle = currentTitle.data;
+      } else {
+        currentTitle = "";
+      }
     }
 
-    return res.json({ success: true, result: { equipment, classe, level, stats, currentTitle} });
+    return res.json({ success: true, result: { equipment, classe, level, stats, currentTitle } });
   }
   return res.status(400).end("Bad Request");
 });

@@ -76,9 +76,9 @@ export function EventsProvider() {
       let items = null;
       if (data) {
         items = data.map(deserializeItem);
+        console.log("Shop mis à jour:", items);
+        setShop(items);
       }
-      console.log("Shop mis à jour:", items);
-      setShop(items);
     });
 
     eventSource.addEventListener("inventory", (e) => {
@@ -90,6 +90,7 @@ export function EventsProvider() {
 
     eventSource.addEventListener("equipment", (e) => {
       const data = JSON.parse(e.data);
+      if (data) {
       const items = data.map(deserializeItem);
       const dictionary = items.reduce((acc, item) => {
         acc[item.Type] = item;
@@ -97,6 +98,7 @@ export function EventsProvider() {
       }, {});
       console.log("Equipment mis à jour:", dictionary);
       setEquipment(dictionary);
+      }
     });
 
     /* config */
