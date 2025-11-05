@@ -52,7 +52,7 @@ function clearCache() {
 
 function getLeaderBoardData() {
   return Object.entries(userCache).map(([user, data]) => {
-    const equipment = data?.equipment?.data || {};
+    const equipment = data?.equipment?.data || [];
     return { user, equipment };
   });
 }

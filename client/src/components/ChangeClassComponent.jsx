@@ -32,22 +32,21 @@ export default function ChangeClassComponent({ classe }) {
   useEffect(() => {
     if (classe) {
       setSelectedClass(classe);
-
     }
   }, [classe]);
 
   const handleSubmit = async () => {
-      if (selectedClass == classe) {
-        return;
-      }
-      apiRequest("/changeClass", "POST", { class: selectedClass }, (data) => {
-          console.log("Callback change class:", data);
-          if (data.success == "KO") {
-              addToast(JSON.parse(data.data), "error");
-          } else if (data.success == "PENDING") {
-              addToast(JSON.parse(data.data), "warning");
-          }
-      });
+    if (selectedClass == classe) {
+      return;
+    }
+    apiRequest("/changeClass", "POST", { class: selectedClass }, (data) => {
+        console.log("Callback change class:", data);
+        if (data.success == "KO") {
+            addToast(JSON.parse(data.data), "error");
+        } else if (data.success == "PENDING") {
+            addToast(JSON.parse(data.data), "warning");
+        }
+    });
   }
 
   return (

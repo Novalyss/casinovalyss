@@ -10,11 +10,19 @@ export default function Leaderboard() {
   const leaderboard = useMemo(() => {
 
     return leaderboardData
-      .filter(({ user }) => user !== "Novalyss")
+      //.filter(({ user }) => user !== "Novalyss")
       .map(({ user, equipment = [] }) => {
 
-        // Désérialiser chaque item du joueur
-        const items = equipment.map(deserializeItem);
+        const safeEquipment = Array.isArray(equipment) ? equipment : [];
+
+        // 🔹 Désérialiser chaque item
+        const items = safeEquipment.map((eq) => {
+          try {
+            return deserializeItem(eq);
+          } catch {
+            return {}; // si jamais une entrée est corrompue
+          }
+        });
 
         // Calculer la somme totale des stats de tous ses items
         const totalStats = items.reduce(
@@ -30,6 +38,7 @@ export default function Leaderboard() {
 
         return { user, totalStats };
       })
+      .filter(({ user, totalStats }) => totalStats > 0)
       // Trier les joueurs par total de stats décroissant
       .sort((a, b) => b.totalStats - a.totalStats);
 }, [leaderboardData]);
