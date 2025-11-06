@@ -535,17 +535,16 @@ wss.on('connection', (ws) => {
       return;
     }
 
-    /* user leaderboard update */
-    if (action == "leaderboard") {
-      const leaderboardData = JSON.parse(data);
-      setUserCache(user, action, leaderboardData);
-      sendToAllUsers(action, [{ user: user, ...leaderboardData }]);
-      return;
-    }
-
     if (status == "OK") {
       setUserCache(user, action, JSON.parse(data));
       sendToUser(user, action, JSON.parse(data));
+    }
+
+        // CHANGE THIS
+    /* user leaderboard update */
+    if (action == "equipment") {
+      const leaderboardData = JSON.parse(data);
+      sendToAllUsers("leaderboard", [{ user: user, equipment: leaderboardData }]);
     }
     
     if (pendingRequests.has(requestId)) {
