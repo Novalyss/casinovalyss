@@ -540,7 +540,6 @@ wss.on('connection', (ws) => {
       sendToUser(user, action, JSON.parse(data));
     }
 
-        // CHANGE THIS
     /* user leaderboard update */
     if (action == "equipment") {
       const leaderboardData = JSON.parse(data);

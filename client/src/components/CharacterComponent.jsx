@@ -76,7 +76,7 @@ export default function CharacterComponent({
 
       {/* Gants */}
       <div className="row-start-3 row-end-4 col-start-1 flex justify-center">
-        <EquipmentSlot type="Gloves" item={equipment["Gloves"]} icon={typeIcons["Gloves"]} readOnly />
+        <EquipmentSlot type="Gloves" item={equipment["Gloves"]} icon={typeIcons["Gloves"]} readOnly={readOnly} />
       </div>
 
       {/* Arme */}
