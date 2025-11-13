@@ -120,7 +120,7 @@ export default function Leaderboard() {
               {playerIndex + 1}. {playerData.user}
             </span>
             <div className="flex justify-end">
-              <span className="font-semibold">{player.totalStats} iLvl</span>
+              <span className="font-semibold">{playerData.totalStats} iLvl</span>
             </div>
           </div>
         </div>
