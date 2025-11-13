@@ -4,6 +4,7 @@ import { useToast } from "./Toaster";
 import ActionButton from "./ActionButton";
 
 const classesList = [
+  "",
   "Brigand",
   "Leprechaun",
   "Magicien",
@@ -36,7 +37,7 @@ export default function ChangeClassComponent({ classe }) {
   }, [classe]);
 
   const handleSubmit = async () => {
-    if (selectedClass == classe) {
+    if (selectedClass == classe || selectedClass == "") {
       return;
     }
     apiRequest("/changeClass", "POST", { class: selectedClass }, (data) => {
