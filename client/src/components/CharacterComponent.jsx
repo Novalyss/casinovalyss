@@ -35,7 +35,7 @@ export default function CharacterComponent({
     const classe = classeProp ?? classeSSE;
     const level = levelProp ?? levelSSE;
 
-  if (!equipment || !classe || !level) {
+  if (!equipment || !level) {
       return <div className="text-center p-4">Chargement...</div>;
   }
 
@@ -106,7 +106,7 @@ export default function CharacterComponent({
                     border-2 sm:border-4 border-black rounded-xl 
                     shadow-md sm:shadow-lg text-black font-bold tracking-wide text-center text-xs sm:text-base"
         >
-          <div>{classe === "null" ? "Noob" : classe}</div>
+          <div>{classe === null ? "Noob" : classe}</div>
           <div>Niveau {level}</div>
         </div>
       </div>
