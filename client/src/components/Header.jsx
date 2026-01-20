@@ -29,9 +29,9 @@ export default function Header() {
             <Link to="/armory" className="inline-flex items-center gap-1 hover:underline">
               🛡️ <span>Armurerie</span>
             </Link>
-            <Link to="/quest" className="inline-flex items-center gap-1 hover:underline">
+            {/* <Link to="/quest" className="inline-flex items-center gap-1 hover:underline">
               📜 <span>Quêtes</span>
-            </Link>
+            </Link> */}
             <Link to="/leaderboard" className="inline-flex items-center gap-1 hover:underline">
               🏆 <span>Leaderboard</span>
             </Link>
@@ -92,7 +92,7 @@ export default function Header() {
             </span>
           </Link>
 
-          <Link
+          {/* <Link
             onClick={() => setOpen(false)}
             to="/quest"
             className="block hover:underline"
@@ -100,7 +100,7 @@ export default function Header() {
             <span className="inline-flex items-center gap-1 justify-center w-full">
               📜 <span>Quêtes</span>
             </span>
-          </Link>
+          </Link> */}
 
           <Link
             onClick={() => setOpen(false)}
