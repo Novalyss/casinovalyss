@@ -37,7 +37,6 @@ export default function Auth() {
       (async () => {
         await saveUserToken(access_token);
         saveUserInfo();
-        //window.history.replaceState({}, document.title, window.location.pathname);
       })();
     }
     }

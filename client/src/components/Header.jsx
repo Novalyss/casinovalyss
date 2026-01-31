@@ -9,7 +9,7 @@ export default function Header() {
     <header className="py-2 bg-white rounded-lg shadow">
       <div className="container mx-auto flex items-center justify-between px-1">
         {/* Logo gauche */}
-        <Link to="/shop" className="flex-shrink-0">
+        <Link to="/character" className="flex-shrink-0">
           <img
             src="/assets/logo.png"
             alt="CasiNovalyss Logo"
