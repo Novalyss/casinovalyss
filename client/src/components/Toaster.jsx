@@ -6,6 +6,12 @@ export function useToast() {
   return useContext(ToastContext);
 }
 
+const toastColors = {
+  error: "bg-red-600",
+  success: "bg-green-600",
+  warning: "bg-yellow-600",
+};
+
 export default function Toaster({ children }) {
   const [toasts, setToasts] = useState([]);
 
@@ -38,19 +44,13 @@ export default function Toaster({ children }) {
           <div
             key={toast.id}
             className={`w-full sm:w-[400px] md:w-[500px] lg:w-[600px]
-  h-[150px] sm:h-[180px] md:h-[200px] p-4  flex items-center justify-center rounded shadow-lg text-white transform transition-all duration-300
+  h-[150px] sm:h-[180px] md:h-[200px] p-4 flex items-center justify-center rounded shadow-lg text-white transform transition-all duration-300
               ${
                 toast.visible
                   ? "translate-y-0 opacity-100"
                   : "translate-y-4 opacity-0"
               }
-              ${
-                toast.type === "error"
-                  ? "bg-red-600"
-                  : toast.type === "success"
-                  ? "bg-green-600"
-                  : "bg-orange-600"
-              }`}
+              ${toastColors[toast.type] ?? "bg-gray-600"}`}
           >
             {toast.message}
           </div>

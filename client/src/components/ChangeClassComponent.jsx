@@ -11,7 +11,7 @@ const classesList = [
   "Voleur",
   "Enchanteur",
   "Pirate",
-  "Ouvrier",
+  //"Ouvrier",
   "Pyromancien",
 ];
 
@@ -21,7 +21,7 @@ const classDescriptions = {
   Voleur: "Reçoit un bonus de potatos lorsqu’il gagne.",
   Magicien: "A une chance d’obtenir un tirage bonus.",
   Enchanteur: "Peut !enchanter son prochain tirage pour un boost de chance.",
-  Ouvrier: "Est payé après avoir déplacé un certain nombre de barres de fer.",
+  //Ouvrier: "Est payé après avoir déplacé un certain nombre de barres de fer.",
   Pyromancien: "Bénéficie d’un bonus de chance sous un certain seuil de potatos.",
   Brigand: "Peut !voler le casino après plusieurs parties.",
 };
@@ -38,6 +38,7 @@ export default function ChangeClassComponent({ classe }) {
 
   const handleSubmit = async () => {
     if (selectedClass == classe || selectedClass == "") {
+      addToast("Sélectionne une classe différente avant de valider", "warning");
       return;
     }
     apiRequest("/changeClass", "POST", { class: selectedClass }, (data) => {
