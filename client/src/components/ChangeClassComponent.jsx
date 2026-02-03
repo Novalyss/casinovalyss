@@ -47,6 +47,8 @@ export default function ChangeClassComponent({ classe }) {
             addToast(JSON.parse(data.data), "error");
         } else if (data.success == "PENDING") {
             addToast(JSON.parse(data.data), "warning");
+        } else {
+            addToast(JSON.parse(data.data), "success");
         }
     });
   }

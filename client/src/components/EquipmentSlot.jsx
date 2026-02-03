@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { useEvents } from "./EventsProvider";
 import { apiRequest } from "../lib/api";
+import { useToast } from "./Toaster";
 import ItemCard from "./ItemCard";
 
 export default function EquipmentSlot({ type, item, icon, readOnly }) {
   const [menu, setMenu] = useState(null);
   const menuRef = useRef(null);
   const { inventory, online } = useEvents();
+  const { addToast } = useToast();
 
   // Fermer le menu si on clique ailleurs
   useEffect(() => {
@@ -60,8 +62,13 @@ export default function EquipmentSlot({ type, item, icon, readOnly }) {
                 onClick={async () => {
                   console.log("Unequip:", type);
                   await apiRequest("/unequip", "POST", { slot: type }, (data) => {
-                  if (data.success === "KO") addToast(JSON.parse(data.data), "error");
-                      else if (data.success === "PENDING") addToast(JSON.parse(data.data), "warning");
+                      if (data.success === "KO") {
+                        addToast(JSON.parse(data.data), "error");
+                      } else if (data.success === "PENDING") {
+                        addToast(JSON.parse(data.data), "warning");
+                      } else {
+                        addToast(JSON.parse(data.data), "success");
+                      }
                     });
                     handleClose();
                   }}
@@ -88,8 +95,13 @@ export default function EquipmentSlot({ type, item, icon, readOnly }) {
                     onClick={async () => {
                       console.log("Équiper:", equip);
                       await apiRequest("/equip", "POST", { itemId: equip.Id }, (data) => {
-                        if (data.success === "KO") addToast(JSON.parse(data.data), "error");
-                        else if (data.success === "PENDING") addToast(JSON.parse(data.data), "warning");
+                        if (data.success === "KO") {
+                          addToast(JSON.parse(data.data), "error");
+                        } else if (data.success === "PENDING") {
+                          addToast(JSON.parse(data.data), "warning");
+                        } else {
+                          addToast(JSON.parse(data.data), "success");
+                        }
                       });
                       handleClose();
                     }}

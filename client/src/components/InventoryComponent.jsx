@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { useEvents } from "./EventsProvider";
 import { apiRequest } from "../lib/api";
+import { useToast } from "./Toaster";
 import ItemCard from "./ItemCard";
 
 export default function InventoryComponent() {
+    const { addToast } = useToast();
     const { inventory, online } = useEvents();
     const [menu, setMenu] = useState(null);
     const menuRef = useRef(null);
@@ -68,6 +70,8 @@ export default function InventoryComponent() {
                   addToast(JSON.parse(data.data), "error");
                 } else if (data.success == "PENDING") {
                   addToast(JSON.parse(data.data), "warning");
+                } else {
+                  addToast(JSON.parse(data.data), "success");
                 }
               }
             );
@@ -87,6 +91,8 @@ export default function InventoryComponent() {
                   addToast(JSON.parse(data.data), "error");
                 } else if (data.success == "PENDING") {
                   addToast(JSON.parse(data.data), "warning");
+                }  else {
+                  addToast(JSON.parse(data.data), "success");
                 }
               }
             );
