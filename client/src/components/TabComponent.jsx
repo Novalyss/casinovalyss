@@ -28,13 +28,9 @@ export default function TabComponent({ tabs }) {
 
         {/* Contenu : prend toute la largeur, n'agrandit pas le parent.
             On limite la largeur max interne et on permet le scroll si nécessaire */}
-        <div className="w-full">
-          <div className="p-4 w-full max-w-full overflow-x-auto">
-            <div className="p-4 w-full max-w-full flex flex-col">
+          <div className="w-full max-w-full overflow-x-auto">
               {tabs[activeTab].content}
-            </div>
           </div>
-        </div>
       </div>
     </div>
   );

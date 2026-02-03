@@ -73,10 +73,6 @@ export default function Inventory() {
           <TabComponent
             tabs={[
               {
-                title: <p>Inventaire</p>,
-                content: <InventoryComponent />,
-              },
-              {
                 title: <p>Statistiques</p>,
                 content: <StatsComponent equipment={equipment} equipmentConfig={equipmentConfig} />,
               },
@@ -88,7 +84,20 @@ export default function Inventory() {
           />
         </div>
       </div>
-      <div className="flex flex-col lg:flex-row gap-6">
+
+      {/* Inventaire */}
+      <div className="rounded-lg bg-white shadow-md my-4">
+        <TabComponent
+          tabs={[
+            {
+              title: <p>Inventaire</p>,
+              content: <InventoryComponent />,
+            }
+          ]}
+        />
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-4">
          <div className="w-full">
           <ChangeClassComponent classe={classe}/>
         </div>

@@ -34,7 +34,10 @@ export default function InventoryComponent() {
     }
 
     return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-1">
+    <div className="grid p-4  gap-1"
+      style={{
+        gridTemplateColumns: "repeat(auto-fit, max(80px))",
+    }}>
       {inventory.map((item) => (
         <div
           key={item.Id}
