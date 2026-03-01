@@ -6,7 +6,7 @@ export function cn(...inputs) {
 }
 
 export function deserializeItem(str) {
-  const [Id, Type, Chance, FlatBonus, MultBonus, CooldownReduction, CostReduction, Cost] = str.split("|");
+  const [Id, Type, Chance, FlatBonus, MultBonus, CooldownReduction, CostReduction, Cost, Name] = str.split("|");
 
   return {
     Id,
@@ -16,6 +16,7 @@ export function deserializeItem(str) {
     MultBonus: Number(MultBonus),
     CooldownReduction: Number(CooldownReduction),
     CostReduction: Number(CostReduction),
-    Cost: Number(Cost)
+    Cost: Number(Cost),
+    Name: Name
   };
 }
