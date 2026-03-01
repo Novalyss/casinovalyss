@@ -44,7 +44,8 @@ export default function Leaderboard() {
 }, [leaderboardData]);
 
   if (leaderboard.length === 0) {
-    return <p className="text-center text-gray-500">Chargement du classement...</p>;
+    return <p className="text-center text-gray-500">C'est vide...<br/>
+    Au boulot les gars !</p>;
   }
 
   // Top

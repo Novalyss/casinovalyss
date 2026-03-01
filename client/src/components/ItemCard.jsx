@@ -23,8 +23,6 @@ export default function ItemCard({ item }) {
 
   const { equipment } = useEvents();
 
-  const totalStats = countTotalStats(item);
-
   function countTotalStats(itemSelected) {
     const totalStats =
       itemSelected.Chance +
@@ -36,7 +34,7 @@ export default function ItemCard({ item }) {
       return totalStats;
   }
 
-  function getBorderClass() {
+  function getBorderClass(selectionItem) {
     const thresholds = [
       { limit: 100, color: "border-gray-400" },
       { limit: 200, color: "border-green-500" },
@@ -46,10 +44,12 @@ export default function ItemCard({ item }) {
       { limit: Infinity, color: "border-red-500" },
     ];
 
-    return thresholds.find((t) => totalStats < t.limit)?.color || "border-gray-300";
+    const totalStats = countTotalStats(selectionItem);
+
+    return thresholds.find((t) => totalStats < t.limit)?.color || "border-gray-400";
   }
 
-  function getItemColor() {
+  function getItemColor(selectionItem) {
     const thresholds = [
       { limit: 100, color: "text-gray-400" },
       { limit: 200, color: "text-green-500" },
@@ -58,6 +58,8 @@ export default function ItemCard({ item }) {
       { limit: 500, color: "text-yellow-500" },
       { limit: Infinity, color: "text-red-500" },
     ];
+
+    const totalStats = countTotalStats(selectionItem);
 
     return thresholds.find((t) => totalStats < t.limit)?.color || "text-gray-400";
   }
@@ -85,7 +87,7 @@ export default function ItemCard({ item }) {
   return (
     <div
       key={item.Id}
-      className={`relative cursor-pointer border-4 rounded-lg shadow hover:shadow-lg transition flex flex-col items-center overflow-hidden ${getBorderClass()}`}
+      className={`relative cursor-pointer border-4 rounded-lg shadow hover:shadow-lg transition flex flex-col items-center overflow-hidden ${getBorderClass(item)}`}
     >
       <TooltipProvider delayDuration={100}>
         <Tooltip>
@@ -107,9 +109,9 @@ export default function ItemCard({ item }) {
           >
             <div className="flex gap-[1px]">
               {/* Tooltip principal */}
-              <div className={`relative p-2 pr-10 rounded border-4 ${getBorderClass()}`}>
+              <div className={`relative p-2 pr-10 rounded border-4 ${getBorderClass(item)}`}>
                 <div className="flex justify-between items-start">
-                  <p className={`${getItemColor()}`}>
+                  <p className={`${getItemColor(item)}`}>
                     <strong>{item.Name}</strong>
                   </p>
                 </div>
@@ -141,15 +143,18 @@ export default function ItemCard({ item }) {
 
               {/* Tooltip comparaison */}
               {equippedItem && item !== equippedItem && (
-                <div
-                  className={`p-2 rounded border-4 ${getBorderClass(equippedItem)}`}
-                >
+                <div className={`relative p-2 pr-10 rounded border-4 ${getBorderClass(equippedItem)}`}>
                   <div className="flex justify-between items-start">
                     <p className="font-semibold mb-1">Actuellement équipé</p>
-                    <span className="text-xs font-bold px-0.5 py-0.5 rounded ml-auto self-start">
-                      ilvl {countTotalStats(equippedItem)}
-                    </span>
                   </div>
+                  <div className="flex justify-between items-start">
+                    <p className={`${getItemColor(equippedItem)}`}>
+                      <strong>{equippedItem.Name}</strong>
+                    </p>
+                  </div>
+                  <span className="absolute top-1 right-1 text-[10px] sm:text-xs px-1.5 py-0.5 bg-black/70 text-white rounded-md font-bold leading-none">
+                    {countTotalStats(equippedItem)}
+                  </span>
 
                   {stats.map(({ label, key }) => (
                     <p key={key}>
