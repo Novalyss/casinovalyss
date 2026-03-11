@@ -19,8 +19,7 @@ export default function SkillComponent({ classe, level, classesConfig }) {
         return `🎲 Coup de maître : tu as ${procChance}% de chances d’obtenir un tirage supplémentaire.`;
       case "Enchanteur":
         const nbEnchantGameRequired = Math.floor(classesConfig.EnchantMaxGame - (level / classesConfig.LevelCap) * (classesConfig.EnchantMaxGame - classesConfig.EnchantMinGame));
-        const enchantChanceValue = Math.floor(level / classesConfig.EnchantLevelDivider);
-        return `⭐ Main de la fortune : toutes les ${nbEnchantGameRequired} parties, ton prochain tirage peut être !enchanter, augmentant ta chance de +${enchantChanceValue}.`;
+        return `⭐ Main de la fortune : toutes les ${nbEnchantGameRequired} parties, le prochain tirage est enchanter, transformant le résultat du tirage.`;
       case "Ouvrier":
         const nbOuvrierGameRequired = Math.floor(classesConfig.OuvrierMaxGame - (level / classesConfig.LevelCap) * (classesConfig.OuvrierMaxGame - classesConfig.OuvrierMinGame));
         let ouvrierPayment = classesConfig.OuvrierMinPayment + (level / classesConfig.LevelCap) * (classesConfig.OuvrierMaxPayment - classesConfig.OuvrierMinPayment);
@@ -31,7 +30,7 @@ export default function SkillComponent({ classe, level, classesConfig }) {
         return `🔥 Pyromancien téméraire : si ton montant de potatos est en dessous de ${pyromancienThreshold}, tu gagnes +${pyromancienBonus} de chance.`;
       case "Brigand":
         const brigandRequiredGame = Math.floor(classesConfig.BrigandMaxGame - (level / classesConfig.LevelCap) * (classesConfig.BrigandMaxGame - classesConfig.BrigandMinGame));
-        return `🕶️ Vol à la tire : toutes les ${brigandRequiredGame} parties jouées, tu peux !voler le casino.`;
+        return `🕶️ Vol à la tire : toutes les ${brigandRequiredGame} parties jouées, tu voles le casino.`;
       default:
         return "💤 Sans talent : aucune capacité spéciale… utilise !changerClasse pour en obtenir une.";
     }
