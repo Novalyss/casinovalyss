@@ -20,10 +20,10 @@ const classDescriptions = {
   Pirate: "Gagne un multiplicateur de potatos bonus.",
   Voleur: "Reçoit un bonus de potatos lorsqu’il gagne.",
   Magicien: "A une chance d’obtenir un tirage bonus.",
-  Enchanteur: "Peut !enchanter son prochain tirage pour un boost de chance.",
+  Enchanteur: "Peut enchanter son prochain tirage pour un boost de chance.",
   //Ouvrier: "Est payé après avoir déplacé un certain nombre de barres de fer.",
   Pyromancien: "Bénéficie d’un bonus de chance sous un certain seuil de potatos.",
-  Brigand: "Peut !voler le casino après plusieurs parties.",
+  Brigand: "Peut voler le casino après plusieurs parties.",
 };
 
 export default function ChangeClassComponent({ classe }) {
