@@ -64,3 +64,16 @@ button:hover {
 .mt-2 { margin-top: 1rem; }
 .mt-4 { margin-top: 2rem; }
 .mb-2 { margin-bottom: 1rem; }
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
