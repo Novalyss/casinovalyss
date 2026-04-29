@@ -56,7 +56,7 @@ export default function EquipmentSlot({ type, item, icon, readOnly }) {
       <div
         className="flex items-center justify-center cursor-pointer"
         onClick={() => {
-          if (!readOnly) setOpen(true);
+          setOpen(true);
         }}
       >
         {item ? (<ItemCard item={item} />) : (
@@ -86,7 +86,10 @@ export default function EquipmentSlot({ type, item, icon, readOnly }) {
 
               sm:top-1/2 sm:left-1/2 sm:right-auto sm:bottom-auto
               sm:translate-x-[-50%] sm:translate-y-[-50%]
-              sm:rounded-xl sm:w-[650px] sm:max-w-[95vw]
+
+              sm:w-auto sm:max-w-2xl lg:max-w-4xl xl:max-w-5xl
+              w-full
+
               sm:max-h-[90vh] sm:overflow-y-auto
               animate-slide-up
             "
@@ -96,7 +99,7 @@ export default function EquipmentSlot({ type, item, icon, readOnly }) {
               {/* ITEM SLOT */}
               <div className="flex justify-center">
                 {item ? (
-                  <div className="w-full max-w-md">
+                  <div className="w-full max-w-md lg:max-w-3xl">
                     {/* HEADER ITEM */}
                     <div className="grid grid-cols-[1fr_auto_1fr] items-center mb-2">
 
@@ -142,7 +145,7 @@ export default function EquipmentSlot({ type, item, icon, readOnly }) {
               </div>
 
               {/* ACTION UNEQUIP */}
-              {item && (
+              {item && !readOnly && (
                 <button
                   onClick={handleUnequip}
                   className="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300 transition"
@@ -152,25 +155,28 @@ export default function EquipmentSlot({ type, item, icon, readOnly }) {
               )}
 
               {/* LABEL */}
-              <div className="text-center font-semibold border-b pb-1">
-                Objets équipables
-              </div>
+              {!readOnly && (
+                <div className="">
+                  <div className="text-center font-semibold border-b pb-1">
+                  Objets équipables:
+                  </div>
 
-              {/* INVENTORY ITEMS */}
-              <div className="grid grid-cols-3 gap-2">
-                {inventory
-                  .filter((i) => i.Type === type)
-                  .map((equip) => (
-                    <div
-                      key={equip.Id}
-                      className="flex justify-center cursor-pointer hover:bg-gray-100 rounded"
-                      onClick={() => handleEquip(equip)}
-                    >
-                      <ItemCard item={equip} />
-                    </div>
-                  ))}
-              </div>
-
+                  {/* INVENTORY ITEMS */}
+                  <div className="grid grid-cols-3 gap-2">
+                    {inventory
+                      .filter((i) => i.Type === type)
+                      .map((equip) => (
+                        <div
+                          key={equip.Id}
+                          className="flex justify-center cursor-pointer hover:bg-gray-100 rounded"
+                          onClick={() => handleEquip(equip)}
+                        >
+                          <ItemCard item={equip} />
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </>
