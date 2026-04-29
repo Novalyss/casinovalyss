@@ -28,7 +28,7 @@ export default function ItemDetails({ item }) {
 
   return (
     
-    <div className="flex flex-col sm:flex-row gap-[1px] text-left">
+    <div className="flex justify-center flex-col sm:flex-row gap-[1px] text-left">
       {/* Item */}
       <div className={`relative p-2 pr-10 rounded border-4 ${getBorderClass(item)}`}>
         <p className={getItemColor(item)}>

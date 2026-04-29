@@ -109,6 +109,7 @@ export default function ShopComponent() {
             rounded-t-2xl sm:rounded-2xl
             p-4 shadow-lg
             max-h-[90vh] overflow-y-auto
+            animate-slide-up
           ">
             
             {/* HEADER */}
