@@ -11,15 +11,6 @@ const itemImages = {
   Weapon: "../assets/stuff/Weapon.png"
 };
 
-const typeTranslations = {
-  Helm: "Casque",
-  Chest: "Plastron",
-  Legs: "Jambières",
-  Boots: "Bottes",
-  Gloves: "Gants",
-  Weapon: "Arme",
-};
-
 export default function ItemCard({ item }) {
 
   return (

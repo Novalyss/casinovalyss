@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useMemo } from "react";
 import { useEvents } from "./EventsProvider";
 import { apiRequest } from "../lib/api";
 import { useToast } from "./Toaster";
@@ -10,22 +10,147 @@ export default function InventoryComponent() {
     const { inventory, online } = useEvents();
     const [selectedItem, setSelectedItem] = useState(null);
     const [confirmOpen, setConfirmOpen] = useState(false);
+    const [selectedTypes, setSelectedTypes] = useState([]);
+    const [statPriority, setStatPriority] = useState([]);
 
-
-    const handleItemClick = (e, item) => {
-      setSelectedItem(item);
+    const typeTranslations = {
+      Helm: "Casque",
+      Chest: "Cuirasse",
+      Legs: "Jambières",
+      Boots: "Bottes",
+      Gloves: "Gants",
+      Weapon: "Épée",
     };
+
+    const statLabels = {
+      Chance: "Chance",
+      FlatBonus: "Bonus",
+      MultBonus: "Multiplicateur",
+      CooldownReduction: "Cooldown",
+      CostReduction: "Coût",
+    };
+
+    const toggleType = (type) => {
+      setSelectedTypes((prev) =>
+        prev.includes(type)
+          ? prev.filter((t) => t !== type)
+          : [...prev, type]
+      );
+    };
+
+    const addStatSort = (stat) => {
+      if (!stat) return;
+
+      setStatPriority((prev) => {
+        if (prev.includes(stat)) return prev;
+        return [...prev, stat];
+      });
+    };
+
+    const removeStat = (stat) => {
+      setStatPriority((prev) => prev.filter((s) => s !== stat));
+    };
+
+    const resetSort = () => {
+      setStatPriority([]);
+    };
+
+    const processedInventory = useMemo(() => {
+      if (!inventory)
+        return [];
+
+      return [...inventory]
+
+        // ✅ FILTRE TYPE
+        .filter((item) => selectedTypes.length === 0 || selectedTypes.includes(item.Type))
+
+        // ✅ TRI MULTI STATS
+        .sort((a, b) => {
+          for (let stat of statPriority) {
+            const diff = (b[stat] || 0) - (a[stat] || 0);
+            if (diff !== 0) return diff;
+          }
+          return 0;
+        });
+    }, [inventory, selectedTypes, statPriority]);
 
     if (!inventory) {
         return <div className="text-center p-4">Chargement...</div>;
     }
 
+    const handleItemClick = (e, item) => {
+      setSelectedItem(item);
+    };
+
     return (
+      <div>
+        <div className="p-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+
+  {/* FILTRE TYPE */}
+  <div className="flex flex-wrap gap-2">
+    {["Helm", "Chest", "Legs", "Boots", "Gloves", "Weapon"].map((type) => (
+      <div
+        key={type}
+        onClick={() => toggleType(type)}
+        className={`px-2 py-1 rounded border text-xs cursor-pointer ${
+          selectedTypes.includes(type)
+            ? "bg-blue-500 text-white"
+            : "bg-gray-100"
+        }`}
+      >
+        {typeTranslations[type] || type}
+      </div>
+    ))}
+  </div>
+
+  {/* TRI STATS */}
+  <div className="flex items-center gap-2">
+    <div className="flex flex-wrap items-center gap-2 mt-2 text-xs">
+      <span className="font-semibold">Tri :</span>
+
+      {statPriority.length === 0 ? (
+        <span className="text-gray-400">Aucun</span>
+      ) : (
+        statPriority.map((stat, index) => (
+          <span
+            key={stat}
+            onClick={() => removeStat(stat)}
+            className="px-2 py-1 rounded bg-blue-100 text-blue-700 font-medium cursor-pointer hover:bg-red-200 transition cursor-pointer"
+            title="Retirer du tri"
+          >
+            {index + 1}. {statLabels[stat] || stat} ✖
+          </span>
+        ))
+      )}
+    </div>
+
+    <select
+      onChange={(e) => addStatSort(e.target.value)}
+      className="border rounded p-1 text-sm"
+    >
+      <option value="">Ajouter tri</option>
+      <option value="Chance">Chance</option>
+      <option value="FlatBonus">Bonus</option>
+      <option value="MultBonus">Multiplicateur</option>
+      <option value="CooldownReduction">Cooldown</option>
+      <option value="CostReduction">Coût</option>
+    </select>
+
+    <button
+      onClick={resetSort}
+      className="text-xs px-2 py-1 bg-gray-200 rounded"
+    >
+      Reset
+    </button>
+  </div>
+
+</div>
+
     <div className="grid p-4 gap-1"
       style={{
         gridTemplateColumns: "repeat(auto-fit, max(80px))",
     }}>
-      {inventory.map((item) => (
+      {processedInventory.map((item) => (
         <div
           key={item.Id}
           className="flex flex-col items-center cursor-pointer"
@@ -131,5 +256,6 @@ export default function InventoryComponent() {
         </div>
       )}
     </div>
+          </div>
   );
 }
