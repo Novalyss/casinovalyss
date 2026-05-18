@@ -33,13 +33,14 @@ export default function CasinoStats({ casinoStats: casinoStatsProp, }) {
 
     return (
         <div className="text-center text-lg font-semibold p-2 rounded">
-            <div className="grid grid-cols-2 gap-4 bg-white shadow-md rounded-xl p-4">
-                <Stat label="Défaites" value={casinoStats.LoseCount} />
-                <Stat label="Victoires T1" value={casinoStats.WinT1Count} />
-                <Stat label="Victoires T2" value={casinoStats.WinT2Count} />
-                <Stat label="Victoires T3" value={casinoStats.WinT3Count} />
-                <Stat label="Jackpots" value={casinoStats.WinJackpotCount} />
-                <Stat label="Événements gagnés" value={casinoStats.WinEventCount} />
+            <div className="grid grid-cols-3 gap-4 bg-white shadow-md rounded-xl p-4">
+                <Stat label="🏳️ Défaites" value={casinoStats.LoseCount} />
+                <Stat label="⭐ Victoires T1" value={casinoStats.WinT1Count} />
+                <Stat label="👑 Victoires T2" value={casinoStats.WinT2Count} />
+                <Stat label="💎 Victoires T3" value={casinoStats.WinT3Count} />
+                <Stat label="🎰 Jackpots" value={casinoStats.WinJackpotCount} />
+                <Stat label="🚩 Événements gagnés" value={casinoStats.WinEventCount} />
+                <Stat label="🔄 Refresh boutique" value={casinoStats.RefreshCount} />
                 <Stat label="🥔 Gagnés" value={casinoStats.PotatoWon} />
                 <Stat label="🥔 Dépensés" value={casinoStats.PotatoSpent} />
             </div>

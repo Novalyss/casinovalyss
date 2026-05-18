@@ -15,7 +15,7 @@ const toastColors = {
 export default function Toaster({ children }) {
   const [toasts, setToasts] = useState([]);
 
-  const addToast = (message, type = "error", duration = 5000) => {
+  const addToast = (message, type = "error", duration = 2500) => {
     const id = Date.now();
     setToasts((prev) => [...prev, { id, message, type, visible: true }]);
 
