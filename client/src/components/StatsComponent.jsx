@@ -24,6 +24,7 @@ export default function StatsComponent({equipment, equipmentConfig}) {
     totals.CooldownReduction += item.CooldownReduction || 0;
     totals.CostReduction += item.CostReduction || 0;
   });
+  const MAX_STATS_PER_ITEM = 300;
 
   return (
     <div className="p-4 sm:p-4 text-left rounded-lg max-w-full overflow-x-hidden">
@@ -41,7 +42,7 @@ export default function StatsComponent({equipment, equipmentConfig}) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <span className="text-sm sm:text-base cursor-pointer">
-                  🍀 Chance : +{Math.floor(totals.Chance / 1200 * equipmentConfig.Chance)}
+                  🍀 Chance : +{Math.floor(totals.Chance / (MAX_STATS_PER_ITEM * 6) * equipmentConfig.Chance)}
                 </span>
               </TooltipTrigger>
               <TooltipContent>
@@ -54,7 +55,7 @@ export default function StatsComponent({equipment, equipmentConfig}) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <span className="text-sm sm:text-base cursor-pointer">
-                  🎁 Bonus : +{Math.floor(totals.FlatBonus / 1200 * equipmentConfig.Flat)} potatos
+                  🎁 Bonus : +{Math.floor(totals.FlatBonus / (MAX_STATS_PER_ITEM * 6) * equipmentConfig.Flat)} potatos
                 </span>
               </TooltipTrigger>
               <TooltipContent>
@@ -67,7 +68,7 @@ export default function StatsComponent({equipment, equipmentConfig}) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <span className="text-sm sm:text-base cursor-pointer">
-                  📈 Multiplicateur Bonus : +{((totals.MultBonus / 1200 * equipmentConfig.Mult) * 100).toFixed(2)}%
+                  📈 Multiplicateur Bonus : +{((totals.MultBonus / (MAX_STATS_PER_ITEM * 6) * equipmentConfig.Mult) * 100).toFixed(2)}%
                 </span>
               </TooltipTrigger>
               <TooltipContent>
@@ -80,7 +81,7 @@ export default function StatsComponent({equipment, equipmentConfig}) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <span className="text-sm sm:text-base cursor-pointer">
-                  ⏱️ Réduction de cooldown : -{Math.floor(totals.CooldownReduction / 1200 * equipmentConfig.CDR)} secondes
+                  ⏱️ Réduction de cooldown : -{Math.floor(totals.CooldownReduction / (MAX_STATS_PER_ITEM * 6) * equipmentConfig.CDR)} secondes
                 </span>
               </TooltipTrigger>
               <TooltipContent>
@@ -93,7 +94,7 @@ export default function StatsComponent({equipment, equipmentConfig}) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <span className="text-sm sm:text-base cursor-pointer">
-                  💰 Réduction de coût : -{Math.floor(totals.CostReduction / 1200 * equipmentConfig.CostR)} potatos
+                  💰 Réduction de coût : -{Math.floor(totals.CostReduction / (MAX_STATS_PER_ITEM * 6) * equipmentConfig.CostR)} potatos
                 </span>
               </TooltipTrigger>
               <TooltipContent>
