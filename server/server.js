@@ -331,6 +331,17 @@ app.get("/api/class", authenticateUser, async (req, res) => {
   return res.json({ success: false });
 });
 
+app.get("/api/classUnlocked", authenticateUser, async (req, res) => {
+  const cached = getUserCache(req.user, "classUnlocked");
+  
+  if (cached) {
+    sendToUser(req.user, "classUnlocked", cached);
+    return res.json({ success: true, result: cached });
+  }
+  sendToWebSocket({"user": req.user, "action": "classUnlocked"});
+  return res.json({ success: false });
+});
+
 app.get("/api/currentTitle", authenticateUser, async (req, res) => {
   const cached = getUserCache(req.user, "currentTitle");
   

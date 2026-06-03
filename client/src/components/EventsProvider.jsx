@@ -12,6 +12,7 @@ export function EventsProvider() {
   const [inventory, setInventory] = useState(null);
   const [equipment, setEquipment] = useState(null);
   const [classe, setClasse] = useState(null);
+  const [classUnlocked, setClassUnlocked] = useState(null);
   const [level, setLevel] = useState(null);
   const [currentTitle, setCurrentTitle] = useState(null);
   const [titles, setTitles] = useState([]);
@@ -40,6 +41,12 @@ export function EventsProvider() {
       const data = JSON.parse(e.data);
       console.log("Classe du joueur mise à jour:", data);
       setClasse(data);
+    });
+
+    eventSource.addEventListener("classUnlocked", (e) => {
+      const data = JSON.parse(e.data);
+      console.log("Classe disponible du joueur mise à jour:", data);
+      setClassUnlocked(data);
     });
 
     eventSource.addEventListener("casinostats", (e) => {
@@ -153,7 +160,7 @@ export function EventsProvider() {
   }, []);
 
   return (
-    <EventsContext.Provider value={{ gold, shop, inventory, equipment, classe, level, currentTitle, titles, questProgress, casinoStats, online, leaderboardData, refreshTimer }}>
+    <EventsContext.Provider value={{ gold, shop, inventory, equipment, classe, classUnlocked, level, currentTitle, titles, questProgress, casinoStats, online, leaderboardData, refreshTimer }}>
       {<Outlet />}
     </EventsContext.Provider>
   );

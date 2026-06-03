@@ -26,15 +26,24 @@ const classDescriptions = {
   Brigand: "Peut voler le casino après plusieurs parties.",
 };
 
-export default function ChangeClassComponent({ classe }) {
+export default function ChangeClassComponent({ classe, classUnlocked }) {
   const { addToast } = useToast();
   const [selectedClass, setSelectedClass] = useState(classe || "");
+  const [unlockedClass, setUnlockedClass] = useState(classUnlocked || []);
+
+  
 
   useEffect(() => {
     if (classe) {
       setSelectedClass(classe);
     }
   }, [classe]);
+
+  useEffect(() => {
+    if (classUnlocked) {
+      setUnlockedClass(Object.entries(classUnlocked).filter(([_, value]) => value === true).map(([key]) => key));
+    }
+  }, [classUnlocked]);
 
   const handleSubmit = async () => {
     if (selectedClass == classe || selectedClass == "") {
@@ -64,7 +73,7 @@ export default function ChangeClassComponent({ classe }) {
           onChange={(e) => setSelectedClass(e.target.value)}
           className="border rounded-lg p-2 w-full text-center"
         >
-          {classesList.map((classeAvailable) => (
+          {unlockedClass.map((classeAvailable) => (
             <option key={classeAvailable} value={classeAvailable}>
               {classeAvailable}
             </option>

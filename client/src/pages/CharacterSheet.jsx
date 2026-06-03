@@ -14,7 +14,7 @@ import { apiRequest } from "../lib/api";
 export default function Inventory() {
   const [equipmentConfig, setEquipmentConfig] = useState([]);
   const [classesConfig, setClassesConfig] = useState([]);
-  const { classe, level, equipment, currentTitle, titles } = useEvents();
+  const { classe, classUnlocked, level, equipment, currentTitle, titles } = useEvents();
 
   useEffect(() => {
     apiRequest("/inventory");
@@ -22,6 +22,10 @@ export default function Inventory() {
 
   useEffect(() => {
     apiRequest("/class");
+  }, []);
+
+  useEffect(() => {
+    apiRequest("/classUnlocked");
   }, []);
 
   useEffect(() => {
@@ -99,7 +103,7 @@ export default function Inventory() {
 
       <div className="flex flex-col lg:flex-row gap-4">
          <div className="w-full">
-          <ChangeClassComponent classe={classe}/>
+          <ChangeClassComponent classe={classe} classUnlocked={classUnlocked}/>
         </div>
         <div className="w-full">
           <TitleComponent titles={titles} currentTitle={currentTitle} />
