@@ -29,7 +29,7 @@ const classDescriptions = {
 export default function ChangeClassComponent({ classe, classUnlocked }) {
   const { addToast } = useToast();
   const [selectedClass, setSelectedClass] = useState(classe || "");
-  const [unlockedClass, setUnlockedClass] = useState(classUnlocked || []);
+  const [unlockedClass, setUnlockedClass] = useState([]);
 
   
 
