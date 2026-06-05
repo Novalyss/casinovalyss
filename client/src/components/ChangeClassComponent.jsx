@@ -41,13 +41,21 @@ export default function ChangeClassComponent({ classe, classUnlocked }) {
 
   useEffect(() => {
     if (classUnlocked) {
-      setUnlockedClass(Object.entries(classUnlocked).filter(([_, value]) => value === true).map(([key]) => key));
+      let availableClasses = Object.entries(classUnlocked).filter(([_, value]) => value === true).map(([key]) => key);
+      if (!availableClasses.includes(selectedClass)) {
+        availableClasses.push(selectedClass);
+      }
+      setUnlockedClass(availableClasses);
     }
   }, [classUnlocked]);
 
   const handleSubmit = async () => {
-    if (selectedClass == classe || selectedClass == "") {
+    if (selectedClass == classe) {
       addToast("Sélectionne une classe différente avant de valider", "warning");
+      return;
+    }
+    if (selectedClass == "") {
+      addToast("Choisis une vrai classe", "warning");
       return;
     }
     apiRequest("/changeClass", "POST", { class: selectedClass }, (data) => {
