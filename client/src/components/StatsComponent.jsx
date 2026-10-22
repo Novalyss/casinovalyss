@@ -46,7 +46,7 @@ export default function StatsComponent({equipment, equipmentConfig}) {
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Augmente les chances de gagner le gacha</p>
+                <p>Augmente les chances de gagner le gacha (+60 max)</p>
               </TooltipContent>
             </Tooltip>
           </li>
@@ -59,7 +59,7 @@ export default function StatsComponent({equipment, equipmentConfig}) {
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Potatos ajouté aux gains de base d'un gagné gagné</p>
+                <p>Potatos ajouté aux gains de base d'un gacha gagné (+1000 max)</p>
               </TooltipContent>
             </Tooltip>
           </li>
@@ -72,7 +72,7 @@ export default function StatsComponent({equipment, equipmentConfig}) {
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Multiplicateur final de potatos</p>
+                <p>Multiplicateur final de potatos (+0.5 max)</p>
               </TooltipContent>
             </Tooltip>
           </li>
@@ -85,7 +85,7 @@ export default function StatsComponent({equipment, equipmentConfig}) {
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Réduit le temps minimum entre 2 lancés de gacha</p>
+                <p>Réduit le temps minimum entre 2 lancés de gacha (-60s max)</p>
               </TooltipContent>
             </Tooltip>
           </li>
@@ -98,7 +98,7 @@ export default function StatsComponent({equipment, equipmentConfig}) {
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Réduit le coût nécessaire pour lancer un gacha</p>
+                <p>Réduit le coût nécessaire pour lancer un gacha (-2000 max)</p>
               </TooltipContent>
             </Tooltip>
           </li>
