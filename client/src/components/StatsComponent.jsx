@@ -72,7 +72,7 @@ export default function StatsComponent({equipment, equipmentConfig}) {
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Multiplicateur final de potatos (+0.5 max)</p>
+                <p>Multiplicateur final de potatos (+50% max)</p>
               </TooltipContent>
             </Tooltip>
           </li>
